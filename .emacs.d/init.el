@@ -489,6 +489,33 @@
   "pc"  'projectile-compile-project
   "pd"  'projectile-dired)
 
+(use-package lsp-mode
+  :straight t
+  :commands lsp
+  :hook ((go-mode) . lsp)
+  :bind (:map lsp-mode-map
+         ("TAB" . completion-at-point)))
+
+(kraken/leader-key-def
+  "l"  '(:ignore t :which-key "lsp")
+  "ld" 'xref-find-definitions
+  "lr" 'xref-find-references
+  "ln" 'lsp-ui-find-next-reference
+  "lp" 'lsp-ui-find-prev-reference
+  "ls" 'counsel-imenu
+  "le" 'lsp-ui-flycheck-list
+  "lS" 'lsp-ui-sideline-mode
+  "lX" 'lsp-execute-code-action)
+
+(use-package lsp-ui
+  :straight t
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq lsp-ui-sideline-enable t)
+  (setq lsp-ui-sideline-show-hover nil)
+  (setq lsp-ui-doc-position 'bottom)
+  (lsp-ui-doc-show))
+
 (kraken/leader-key-def
   "a"  '(:ignore t :which-key "apps"))
 
@@ -512,7 +539,6 @@
   "ac"  '(cfw:open-org-calendar :which-key "calendar"))
 
 (require 'init-key)
-(require 'init-lsp)
 (require 'init-ui)
 (require 'init-flycheck)
 (require 'init-dev)
