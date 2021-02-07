@@ -11,3 +11,4 @@ transient/
 projectile.cache
 eshell
 forge-database.sqlite
+.cache

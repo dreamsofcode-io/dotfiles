@@ -707,6 +707,15 @@ through =emacsclient.=
 
 Configuration for various programming languages and dev tools that I use
 
+** Binding key prefix
+
+#+begin_src emacs-lisp
+
+  (kraken/leader-key-def
+    "c" '(:ignore t :which-key "code"))
+
+#+end_src
+
 ** Git
 
 *** Magit 
@@ -883,10 +892,429 @@ files contained within the repo.  More information at the [[https://github.com/a
     :straight t
     :hook (lsp-mode . lsp-ui-mode)
     :config
-    (setq lsp-ui-sideline-enable t)
-    (setq lsp-ui-sideline-show-hover nil)
-    (setq lsp-ui-doc-position 'bottom)
+    ;(setq lsp-ui-sideline-enable t)
+    ;(setq lsp-ui-sideline-show-hover nil)
     (lsp-ui-doc-show))
+
+#+end_src
+
+** Go
+
+#+begin_src emacs-lisp
+
+
+(use-package go-mode
+  :functions (go-packages-gopkgs go-update-tools)
+  :bind (:map go-mode-map
+         ("C-c R" . go-remove-unused-imports)
+         ("<f1>" . godoc-at-point))
+  :config
+  ;; Env vars
+  (with-eval-after-load 'exec-path-from-shell
+    (exec-path-from-shell-copy-envs '("GOPATH" "GO111MODULE" "GOPROXY")))
+
+  ;; Install or update tools
+  (defvar go--tools '("golang.org/x/tools/cmd/goimports"
+                      "github.com/go-delve/delve/cmd/dlv"
+                      "github.com/josharian/impl"
+                      "github.com/cweill/gotests/..."
+                      "github.com/fatih/gomodifytags"
+                      "github.com/davidrjenni/reftools/cmd/fillstruct")
+    "All necessary go tools.")
+
+  ;; Do not use the -u flag for gopls, as it will update the dependencies to incompatible versions
+  ;; https://github.com/golang/tools/blob/master/gopls/doc/user.md#installation
+  (defvar go--tools-no-update '("golang.org/x/tools/gopls@latest")
+    "All necessary go tools without update the dependencies.")
+
+  (defun go-update-tools ()
+    "Install or update go tools."
+    (interactive)
+    (unless (executable-find "go")
+      (user-error "Unable to find `go' in `exec-path'!"))
+
+    (message "Installing go tools...")
+    (let ((proc-name "go-tools")
+          (proc-buffer "*Go Tools*"))
+      (dolist (pkg go--tools-no-update)
+        (set-process-sentinel
+         (start-process proc-name proc-buffer "go" "get" "-v" pkg)
+         (lambda (proc _)
+           (let ((status (process-exit-status proc)))
+             (if (= 0 status)
+                 (message "Installed %s" pkg)
+               (message "Failed to install %s: %d" pkg status))))))
+
+      (dolist (pkg go--tools)
+        (set-process-sentinel
+         (start-process proc-name proc-buffer "go" "get" "-u" "-v" pkg)
+         (lambda (proc _)
+           (let ((status (process-exit-status proc)))
+             (if (= 0 status)
+                 (message "Installed %s" pkg)
+               (message "Failed to install %s: %d" pkg status))))))))
+
+  ;; Try to install go tools if `gopls' is not found
+  (unless (executable-find "gopls")
+    (go-update-tools))
+
+  ;; Misc
+  (use-package go-dlv)
+  (use-package go-fill-struct)
+  (use-package go-impl)
+
+  ;; Install: See https://github.com/golangci/golangci-lint#install
+  (use-package flycheck-golangci-lint
+    :if (executable-find "golangci-lint")
+    :after flycheck
+    :defines flycheck-disabled-checkers
+    :hook (go-mode . (lambda ()
+                       "Enable golangci-lint."
+                       (setq flycheck-disabled-checkers '(go-gofmt
+                                                          go-golint
+                                                          go-vet
+                                                          go-build
+                                                          go-test
+                                                          go-errcheck))
+                       (flycheck-golangci-lint-setup))))
+
+  (use-package go-tag
+    :bind (:map go-mode-map
+           ("C-c t t" . go-tag-add)
+           ("C-c t T" . go-tag-remove))
+    :init (setq go-tag-args (list "-transform" "camelcase")))
+
+  (use-package go-gen-test
+    :bind (:map go-mode-map
+           ("C-c t g" . go-gen-test-dwim)))
+
+  (use-package gotest
+    :bind (:map go-mode-map
+           ("C-c t a" . go-test-current-project)
+           ("C-c t m" . go-test-current-file)
+           ("C-c t ." . go-test-current-test)
+           ("C-c t x" . go-run))))
+
+;; Local Golang playground for short snippets
+(use-package go-playground
+  :blackout
+  :commands (go-playground-mode))
+
+#+end_src
+
+** Rust
+
+#+begin_src emacs-lisp
+
+(use-package rust-mode
+  :mode "\\.rs\\'"
+  :init (setq rust-format-on-save t))
+
+;(use-package cargo
+;  :straight t
+;  :defer t)
+
+#+end_src
+
+** YAML
+
+#+begin_src emacs-lisp
+
+(use-package yaml-mode
+  :mode "\\.ya?ml\\'")
+
+#+end_src
+
+
+* Productivity
+
+**  Autocomplete with Company Mode
+
+#+begin_src emacs-lisp
+
+(use-package company
+  :blackout
+  :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
+  :commands company-cancel
+  :bind (("M-/" . company-complete)
+         ("C-M-i" . company-complete)
+         :map company-mode-map
+         ("<backtab>" . company-yasnippet)
+         :map company-active-map
+         ("C-p" . company-select-previous)
+         ("C-n" . company-select-next)
+         ("<tab>" . company-complete-common-or-cycle)
+         ("<backtab>" . my-company-yasnippet)
+         :map company-search-map
+         ("C-p" . company-select-previous)
+         ("C-n" . company-select-next))
+  :hook (after-init . global-company-mode)
+  :init
+  (setq company-tooltip-align-annotations t
+        company-tooltip-limit 12
+        company-idle-delay 0
+        company-echo-delay (if (display-graphic-p) nil 0)
+        company-minimum-prefix-length 1
+        company-require-match nil
+        company-dabbrev-ignore-case nil
+        company-dabbrev-downcase nil
+        company-global-modes '(not erc-mode message-mode help-mode
+                                   gud-mode eshell-mode shell-mode)
+        company-backends '((company-capf :with company-yasnippet)
+                           (company-dabbrev-code company-keywords company-files)
+                           company-dabbrev))
+
+  (defun my-company-yasnippet ()
+    "Hide the current completeions and show snippets."
+    (interactive)
+    (company-cancel)
+    (call-interactively 'company-yasnippet))
+  :config
+  ;; `yasnippet' integration
+  (with-no-warnings
+    (with-eval-after-load 'yasnippet
+      (defun company-backend-with-yas (backend)
+        "Add `yasnippet' to company backend."
+        (if (and (listp backend) (member 'company-yasnippet backend))
+            backend
+          (append (if (consp backend) backend (list backend))
+                  '(:with company-yasnippet))))
+
+      (defun my-company-enbale-yas (&rest _)
+        "Enable `yasnippet' in `company'."
+        (setq company-backends (mapcar #'company-backend-with-yas company-backends)))
+
+      (defun my-lsp-fix-company-capf ()
+        "Remove redundant `comapny-capf'."
+        (setq company-backends
+              (remove 'company-backends (remq 'company-capf company-backends))))
+      (advice-add #'lsp-completion--enable :after #'my-lsp-fix-company-capf)
+
+      (defun my-company-yasnippet-disable-inline (fun command &optional arg &rest _ignore)
+        "Enable yasnippet but disable it inline."
+        (if (eq command 'prefix)
+            (when-let ((prefix (funcall fun 'prefix)))
+              (unless (memq (char-before (- (point) (length prefix)))
+                            '(?. ?< ?> ?\( ?\) ?\[ ?{ ?} ?\" ?' ?`))
+                prefix))
+          (progn
+            (when (and (bound-and-true-p lsp-mode)
+                       arg (not (get-text-property 0 'yas-annotation-patch arg)))
+              (let* ((name (get-text-property 0 'yas-annotation arg))
+                     (snip (format "%s (Snippet)" name))
+                     (len (length arg)))
+                (put-text-property 0 len 'yas-annotation snip arg)
+                (put-text-property 0 len 'yas-annotation-patch t arg)))
+            (funcall fun command arg))))
+      (advice-add #'company-yasnippet :around #'my-company-yasnippet-disable-inline)))
+
+  ;; Better sorting and filtering
+  (use-package company-prescient
+    :init (company-prescient-mode 1))
+
+  ;; Icons and quickhelp
+  (use-package company-box
+	  :diminish
+	  :defines company-box-icons-all-the-icons
+	  :hook (company-mode . company-box-mode)
+	  :init (setq
+				   company-box-backends-colors nil
+				   company-box-doc-delay 0.3)
+	  :config
+	  (with-no-warnings
+	    ;; Prettify icons
+	    (defun my-company-box-icons--elisp (candidate)
+		    (when (or (derived-mode-p 'emacs-lisp-mode) (derived-mode-p 'lisp-mode))
+		      (let ((sym (intern candidate)))
+			      (cond ((fboundp sym) 'Function)
+				          ((featurep sym) 'Module)
+				          ((facep sym) 'Color)
+				          ((boundp sym) 'Variable)
+				          ((symbolp sym) 'Text)
+				          (t . nil)))))
+	    (advice-add #'company-box-icons--elisp :override #'my-company-box-icons--elisp))
+
+	  (declare-function all-the-icons-faicon 'all-the-icons)
+	  (declare-function all-the-icons-material 'all-the-icons)
+	  (declare-function all-the-icons-octicon 'all-the-icons)
+	  (setq company-box-icons-all-the-icons
+			    `((Unknown . ,(all-the-icons-material "find_in_page" :height 0.8 :v-adjust -0.15))
+			      (Text . ,(all-the-icons-faicon "text-width" :height 0.8 :v-adjust -0.02))
+			      (Method . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
+			      (Function . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
+			      (Constructor . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
+			      (Field . ,(all-the-icons-octicon "tag" :height 0.85 :v-adjust 0 :face 'all-the-icons-lblue))
+			      (Variable . ,(all-the-icons-octicon "tag" :height 0.85 :v-adjust 0 :face 'all-the-icons-lblue))
+			      (Class . ,(all-the-icons-material "settings_input_component" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-orange))
+			      (Interface . ,(all-the-icons-material "share" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-lblue))
+			      (Module . ,(all-the-icons-material "view_module" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-lblue))
+			      (Property . ,(all-the-icons-faicon "wrench" :height 0.8 :v-adjust -0.02))
+			      (Unit . ,(all-the-icons-material "settings_system_daydream" :height 0.8 :v-adjust -0.15))
+			      (Value . ,(all-the-icons-material "format_align_right" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-lblue))
+			      (Enum . ,(all-the-icons-material "storage" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-orange))
+			      (Keyword . ,(all-the-icons-material "filter_center_focus" :height 0.8 :v-adjust -0.15))
+			      (Snippet . ,(all-the-icons-material "format_align_center" :height 0.8 :v-adjust -0.15))
+			      (Color . ,(all-the-icons-material "palette" :height 0.8 :v-adjust -0.15))
+			      (File . ,(all-the-icons-faicon "file-o" :height 0.8 :v-adjust -0.02))
+			      (Reference . ,(all-the-icons-material "collections_bookmark" :height 0.8 :v-adjust -0.15))
+			      (Folder . ,(all-the-icons-faicon "folder-open" :height 0.8 :v-adjust -0.02))
+			      (EnumMember . ,(all-the-icons-material "format_align_right" :height 0.8 :v-adjust -0.15))
+			      (Constant . ,(all-the-icons-faicon "square-o" :height 0.8 :v-adjust -0.1))
+			      (Struct . ,(all-the-icons-material "settings_input_component" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-orange))
+			      (Event . ,(all-the-icons-octicon "zap" :height 0.8 :v-adjust 0 :face 'all-the-icons-orange))
+			      (Operator . ,(all-the-icons-material "control_point" :height 0.8 :v-adjust -0.15))
+			      (TypeParameter . ,(all-the-icons-faicon "arrows" :height 0.8 :v-adjust -0.02))
+			      (Template . ,(all-the-icons-material "format_align_left" :height 0.8 :v-adjust -0.15)))
+			    company-box-icons-alist 'company-box-icons-all-the-icons)))
+
+#+end_src
+
+
+** Syntax checking with Flycheck
+
+#+begin_src emacs-lisp
+
+(use-package flycheck
+  :defer t
+  :hook (lsp-mode . flycheck-mode))
+
+#+end_src
+
+** Snippets
+
+#+begin_src emacs-lisp
+
+(use-package yasnippet
+  :hook (prog-mode . yas-minor-mode)
+  :config
+  (yas-reload-all))
+
+#+end_src
+
+** File tree with Treemacs
+
+#+begin_src emacs-lisp
+
+  (use-package treemacs
+    :commands (treemacs-follow-mode
+               treemacs-filewatch-mode
+               treemacs-fringe-indicator-mode
+               treemacs-git-mode)
+    :bind (([f8]        . treemacs)
+           ("M-0"       . treemacs-select-window)
+           ("C-x 1"     . treemacs-delete-other-windows)
+           ("C-x t 1"   . treemacs-delete-other-windows)
+           ("C-x t t"   . treemacs)
+           ("C-x t b"   . treemacs-bookmark)
+           ("C-x t C-t" . treemacs-find-file)
+           ("C-x t M-t" . treemacs-find-tag)
+           :map treemacs-mode-map
+           ([mouse-1]   . treemacs-single-click-expand-action))
+    :config
+    (setq treemacs-collapse-dirs           (if treemacs-python-executable 3 0)
+          treemacs-missing-project-action  'remove
+          treemacs-sorting                 'alphabetic-asc
+          treemacs-follow-after-init       t
+          treemacs-width                   30))
+    :config
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null (executable-find "python3"))))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple)))
+
+    (use-package treemacs-projectile
+      :after projectile
+      :bind (:map projectile-command-map
+             ("h" . treemacs-projectile)))
+
+    (use-package treemacs-magit
+      :after magit
+      :commands treemacs-magit--schedule-update
+      :hook ((magit-post-commit
+              git-commit-post-finish
+              magit-post-stage
+              magit-post-unstage)
+             . treemacs-magit--schedule-update))
+
+    (use-package treemacs-persp
+      :after persp-mode
+      :demand t
+      :functions treemacs-set-scope-type
+      :config (treemacs-set-scope-type 'Perspectives))
+
+#+end_src
+
+#+begin_src emacs-lisp
+  (kraken/leader-key-def
+    "ct" 'treemacs)
+#+end_src
+
+** Rainbow Delimiters
+
+#+begin_src emacs-lisp
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+#+end_src
+
+
+** Column number mode
+
+#+begin_src emacs-lisp
+
+(column-number-mode)
+
+#+end_src
+
+
+** Line number mode
+
+#+begin_src emacs-lisp
+
+  ;; Enable line numbers for prog modes only
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (display-line-numbers-mode 1)
+              (display-fill-column-indicator-mode 1)))
+
+#+end_src
+
+** Fill line column
+
+#+begin_src emacs-lisp
+
+(setq-default fill-column 80)
+
+#+end_src
+
+** Tab Width
+
+#+begin_src emacs-lisp
+
+  (setq-default tab-width 4)
+  (setq-default evil-shift-width tab-width)
+
+#+end_src
+
+** Paren mode
+
+#+begin_src emacs-lisp
+
+  (use-package paren
+    :hook (prog-mode . show-paren-mode))
+
+#+end_src
+
+** Rainbow mode
+#+begin_src emacs-lisp
+
+  (use-package rainbow-mode
+    :commands rainbow-mode)
 
 #+end_src
 
@@ -934,10 +1362,6 @@ files contained within the repo.  More information at the [[https://github.com/a
 
 (require 'init-key)
 (require 'init-ui)
-(require 'init-flycheck)
-(require 'init-dev)
 (require 'init-search)
-(require 'init-company)
-(require 'init-go)
 
 #+end_src

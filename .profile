@@ -10,13 +10,13 @@ alias elliott-git='git config --local user.email "elliott.minns@me.com"; git con
 export EDITOR="nvim"
 export SHELL="zsh"
 
+export GOPATH="$HOME/.go"
 export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$GOPATH/bin:$PATH"
 export PATH="$PATH:/opt/android-sdk/platform-tools"
 export PATH="$PATH:/opt/android-sdk/build-tools"
 export PATH="$PATH:$HOME/.local/bin"
-export GOPATH=$HOME/.go
-export PATH=$PATH:$GOPATH/bin
-export KUBECONFIG=$HOME/.kube/config
+export KUBECONFIG="$HOME/.kube/config"
 
 DO_VALAR() {
   pass show tokens/digitalocean/valar
