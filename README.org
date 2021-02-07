@@ -11,4 +11,4 @@ stow .
 
 * Inspiration
 
-The inspiration for this configuration comes from the [[fantastic dotfiles by daviwil][https://github.com/daviwil/dotfiles]]. If you're looking for inspiration to create your own emacs configuration, or improve your system configuration synchronisation, then I'd suggest watching his videos.
+The inspiration for this configuration comes from the [[https://github.com/daviwil/dotfiles][dotfiles by daviwil]]. If you're looking for inspiration to create your own emacs configuration, or improve your system configuration synchronisation, then I'd suggest watching his videos.
