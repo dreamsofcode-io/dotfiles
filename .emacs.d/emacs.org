@@ -38,7 +38,6 @@ straight.el for reproducible package management
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
 #+end_src
 
 use-package to automatically manage package installation
@@ -894,7 +893,8 @@ files contained within the repo.  More information at the [[https://github.com/a
     :config
     ;(setq lsp-ui-sideline-enable t)
     ;(setq lsp-ui-sideline-show-hover nil)
-    (lsp-ui-doc-show))
+    ;(lsp-ui-doc-show))
+    )
 
 #+end_src
 
@@ -996,14 +996,13 @@ files contained within the repo.  More information at the [[https://github.com/a
                  ("C-c t ." . go-test-current-test)
                  ("C-c t x" . go-run))))
 
-;      (kraken/leader-key-def :keymaps '(go-mode)
-;                          ("mta" 'go-test-current-project))
-
       ;; Local Golang playground for short snippets
       (use-package go-playground
         :blackout
         :commands (go-playground-mode))
 
+  ; load go bin dir into emacs path
+  (add-to-list 'exec-path (expand-file-name "~/go/bin"))
 #+end_src
 
 ** Rust
