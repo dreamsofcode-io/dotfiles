@@ -58,3 +58,5 @@ export GPG_TTY=$(tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
 [ -s "/home/elliott/.svm/svm.sh" ] && source "/home/elliott/.svm/svm.sh"
+
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
