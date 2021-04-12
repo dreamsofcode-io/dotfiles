@@ -77,7 +77,6 @@ font:
   # Scale the font size based on the monitor's DPI. This will lead to bigger text on HiDPI
   # screens and make reading text a little easier.
   #scale_with_dpi: true
-
   # OS X only: use thin stroke font rendering. Thin strokes are suitable
   # for retina displays, but for non-retina you probably want this set to
   # false.
@@ -88,73 +87,32 @@ debug.render_timer: false
 
 #Colors (Nord)
 colors:
+  name: Gnometerm
+  author: ""
   primary:
-    background: '0x2E3440'
-    foreground: '0xD8DEE9'
+    background: "#000000"
+    foreground: "#ffffff"
   cursor:
-    text: '0x2E3440'
-    cursor: '0xD8DEE9'
+    text: "#000000"
+    cursor: "#ffffff"
   normal:
-    black: '0x3B4252'
-    red: '0xBF616A'
-    green: '0xA3BE8C'
-    yellow: '0xEBCB8B'
-    blue: '0x81A1C1'
-    magenta: '0xB48EAD'
-    cyan: '0x88C0D0'
-    white: '0xE5E9F0'
+    black: "#000000"
+    red: "#cc0000"
+    green: "#4e9a06"
+    yellow: "#c4a000"
+    blue: "#3465a4"
+    magenta: "#75507b"
+    cyan: "#06989a"
+    white: "#d3d7cf"
   bright:
-    black: '0x4C566A'
-    red: '0xBF616A'
-    green: '0xA3BE8C'
-    yellow: '0xEBCB8B'
-    blue: '0x81A1C1'
-    magenta: '0xB48EAD'
-    cyan: '0x8FBCBB'
-    white: '0xECEFF4'
-
-# Colors (Tomorrow Night Bright)
-# # Colors (Dracula)
-#colors:
-  # Default colors
-  #primary:
-  #background: '0x282a36'
-  #foreground: '0xf8f8f2'
-
-  # Normal colors
-  #normal:
-  #black:   '0x000000'
-  #red:     '0xff6e67'
-  #green:   '0x5af78e'
-  #yellow:  '0xf4f99d'
-  #blue:    '0xcaa9fa'
-  #magenta: '0xff92d0'
-  #cyan:    '0x9aedfe'
-  #white:   '0xc7c7c7'
-
-  # Bright colors
-  #bright:
-  #black:   '0x686868'
-  #red:     '0xff6e67'
-  #green:   '0x5af78e'
-  #yellow:  '0xf4f99d'
-  #blue:    '0xcaa9fa'
-  #magenta: '0xff92d0'
-  #cyan:    '0x9aedfe'
-  #white:   '0xffffff'
-
-  # Dim colors (Optional)
-  #dim:
-  #black:   '0x333333'
-  #red:     '0xf2777a'
-  #green:   '0x99cc99'
-  #yellow:  '0xffcc66'
-  #blue:    '0x6699cc'
-  #magenta: '0xcc99cc'
-  #cyan:    '0x66cccc'
-  #white:   '0xdddddd'
-
-
+    black: "#555753"
+    red: "#ef2929"
+    green: "#8ae234"
+    yellow: "#fce94f"
+    blue: "#729fcf"
+    magenta: "#ad7fa8"
+    cyan: "#34e2e2"
+    white: "#eeeeec"
 # Visual Bell
 #
 # Any time the BEL code is received, Alacritty "rings" the visual bell. Once
@@ -248,7 +206,6 @@ live_config_reload: true
 #   program: /bin/bash
 #   args:
 #     - --login
-
 # Key bindings
 #
 # Each binding is defined as an object with some properties. Most of the

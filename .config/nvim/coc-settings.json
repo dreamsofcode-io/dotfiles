@@ -1,0 +1,33 @@
+{
+    "languageserver": {
+        "ccls": {
+            "command": "ccls",
+            "filetypes": [
+                "c",
+                "cpp",
+                "objc",
+                "objcpp"
+            ],
+            "rootPatterns": [
+                ".ccls",
+                "compile_commands.json",
+                ".vim/",
+                ".git/",
+                ".hg/"
+            ],
+            "initializationOptions": {
+                "cache": {
+                    "directory": "/tmp/ccls"
+                }
+            }
+        }
+    },
+    "typescript.suggestionActions.enabled": false,
+    "go.goplsArgs": ["-remote", "auto", "-logfile", "/tmp/gopls.log"],
+    "go.goplsPath": "/home/elliott/.go/bin/gopls",
+    "go.goplsOptions": {
+      "completeUnimported": true,
+      "usePlaceholders": true,
+    },
+    "rust-analyzer.serverPath": "/usr/bin/rust-analyzer"
+}
