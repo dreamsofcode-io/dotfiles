@@ -60,3 +60,5 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 [ -s "/home/elliott/.svm/svm.sh" ] && source "/home/elliott/.svm/svm.sh"
 
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+alias protonmail-bridge='PASSWORD_STORE_DIR="$HOME/.local/share/pass" protonmail-bridge'
+
