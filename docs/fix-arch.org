@@ -4,11 +4,20 @@
 * Arch Bootable
 Create a bootable arch linux USB and boot into it
 
+* Connecting to WiFi (optional)
+On some devices, connecting to WiFi is necessary.
+
+#+begin_src sh
+$ iwctl
+[iwctl] station wlan0 scan
+[iwctl] station wlan0 connect <ssid>
+#+end_src
+
 * Enable SSH for easier access (optional)
 Enabling ssh will allow for easier resolution due to being able to have a GUI at the same time. However, this is not always possible.
 
 #+begin_src sh
-$ pacman -Syu
+$ pacman -Sy
 $ pacman -S openssh
 $ systemctl start sshd
 #+end_src
