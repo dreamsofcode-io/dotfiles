@@ -30,6 +30,10 @@ DO_RAILPAY() {
   pass show tokens/digitalocean/railpay
 }
 
+DO_POLLEN() {
+  pass show tokens/digitalocean/pollen
+}
+
 docker_rm_stopped() {
   docker rm $(docker ps -a -q)
 }
