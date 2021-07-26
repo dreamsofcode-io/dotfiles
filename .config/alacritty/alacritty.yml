@@ -87,32 +87,32 @@ debug.render_timer: false
 
 #Colors (Nord)
 colors:
-  name: Gnometerm
-  author: ""
+  name: Eighties (dark)
+  author: Chris Kempson
   primary:
-    background: "#000000"
-    foreground: "#ffffff"
+    background: "#2d2d2d"
+    foreground: "#d3d0c8"
   cursor:
-    text: "#000000"
-    cursor: "#ffffff"
+    text: "#2d2d2d"
+    cursor: "#d3d0c8"
   normal:
-    black: "#000000"
-    red: "#cc0000"
-    green: "#4e9a06"
-    yellow: "#c4a000"
-    blue: "#3465a4"
-    magenta: "#75507b"
-    cyan: "#06989a"
-    white: "#d3d7cf"
+    black: "#2d2d2d"
+    red: "#f2777a"
+    green: "#99cc99"
+    yellow: "#ffcc66"
+    blue: "#6699cc"
+    magenta: "#cc99cc"
+    cyan: "#66cccc"
+    white: "#d3d0c8"
   bright:
-    black: "#555753"
-    red: "#ef2929"
-    green: "#8ae234"
-    yellow: "#fce94f"
-    blue: "#729fcf"
-    magenta: "#ad7fa8"
-    cyan: "#34e2e2"
-    white: "#eeeeec"
+    black: "#747369"
+    red: "#f2777a"
+    green: "#99cc99"
+    yellow: "#ffcc66"
+    blue: "#6699cc"
+    magenta: "#cc99cc"
+    cyan: "#66cccc"
+    white: "#f2f0ec"
 # Visual Bell
 #
 # Any time the BEL code is received, Alacritty "rings" the visual bell. Once
