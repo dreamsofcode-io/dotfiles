@@ -218,7 +218,8 @@ au FileType rust nmap gs <Plug>(rust-def-split)
 au FileType rust nmap gx <Plug>(rust-def-vertical)
 au FileType rust nmap <leader>gd <Plug>(rust-doc)
 
-autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+" autocmd BufWritePre *.go :call CocAction('organizeImport')
+nnoremap <leader>gi :call CocAction('runCommand', 'editor.action.organizeImport')<CR>
 
 autocmd FileType go nmap gotj :CocCommand go.tags.add json<cr>
 autocmd FileType go nmap goty :CocCommand go.tags.add yaml<cr>

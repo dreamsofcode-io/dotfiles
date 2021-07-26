@@ -29,5 +29,9 @@
       "completeUnimported": true,
       "usePlaceholders": true,
     },
+    "coc.preferences.formatOnSaveFiletypes": [
+        "go",
+        "tf"
+    ],
     "rust-analyzer.serverPath": "/usr/bin/rust-analyzer"
 }
