@@ -45,7 +45,10 @@ if dein#load_state('$HOME/.cache/dein')
     call dein#add('slashmili/alchemist.vim')
     call dein#add('racer-rust/vim-racer')
     call dein#add('sheerun/vim-polyglot')
+    call dein#add('evanleck/vim-svelte')
     call dein#add('neoclide/coc.nvim', {'merged':0, 'rev': 'release'})
+    call dein#add('neovim/nvim-lspconfig')
+    call dein#add('hrsh7th/nvim-compe')
     call dein#add('autozimu/LanguageClient-neovim', {
     \ 'rev': 'next',
     \ 'build': 'bash install.sh',
@@ -79,3 +82,6 @@ source $HOME/.config/nvim/config/plugins.vim
 source $HOME/.config/nvim/config/keys.vim
 source $HOME/.config/nvim/config/colors.vim
 
+lua << EOF
+# require'lspconfig'.gopls.setup{}
+EOF

@@ -29,6 +29,9 @@
       "completeUnimported": true,
       "usePlaceholders": true,
     },
+    "gopls.env": {
+        "GOFLAGS": "-tags=test,e2e_test,integration_test"
+    },
     "coc.preferences.formatOnSaveFiletypes": [
         "go",
         "tf"
