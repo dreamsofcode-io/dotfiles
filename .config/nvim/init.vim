@@ -82,6 +82,6 @@ source $HOME/.config/nvim/config/plugins.vim
 source $HOME/.config/nvim/config/keys.vim
 source $HOME/.config/nvim/config/colors.vim
 
-lua << EOF
-# require'lspconfig'.gopls.setup{}
-EOF
+" lua << EOF
+" require'lspconfig'.gopls.setup{}
+" EOF
