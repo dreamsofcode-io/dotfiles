@@ -171,8 +171,8 @@ mouse:
 
   hide_when_typing: true
 
-  url:
-    launcher: open
+  #url:
+  #  launcher: open
   # Faux Scrollback
   #
   # The `faux_scrollback_lines` setting controls the number

@@ -30,7 +30,7 @@
       "usePlaceholders": true,
     },
     "gopls.env": {
-        "GOFLAGS": "-tags=test,e2e_test,integration_test"
+        "GOFLAGS": "-tags=test,e2e_test,integration_test,acceptance_test"
     },
     "coc.preferences.formatOnSaveFiletypes": [
         "go",

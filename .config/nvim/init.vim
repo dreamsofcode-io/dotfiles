@@ -54,6 +54,8 @@ if dein#load_state('$HOME/.cache/dein')
     \ 'build': 'bash install.sh',
     \ })
     call dein#add('junegunn/fzf')
+    call dein#add('moll/vim-bbye')
+    call dein#add('dart-lang/dart-vim-plugin')
 
     " You can specify revision/branch/tag.
     call dein#add('Shougo/vimshell.vim')
