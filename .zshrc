@@ -48,7 +48,8 @@ export NVM_DIR="$HOME/.nvm"                            # You can change this if 
 export NVM_SOURCE="/usr/share/nvm"                     # The AUR package installs it to here.
 [ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"  # Load N
 
-eval "$(rbenv init -)"
+# Using rbenv
+# eval "$(rbenv init -)"
 
 #bindkey "^V" backward-char
 
