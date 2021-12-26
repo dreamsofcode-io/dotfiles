@@ -36,5 +36,6 @@
         "go",
         "tf"
     ],
-    "rust-analyzer.serverPath": "/usr/bin/rust-analyzer"
+    "rust-analyzer.serverPath": "/usr/bin/rust-analyzer",
+    "svelte.enable-ts-plugin": true
 }
