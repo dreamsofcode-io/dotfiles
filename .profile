@@ -66,3 +66,11 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 alias protonmail-bridge='PASSWORD_STORE_DIR="$HOME/.local/share/pass" protonmail-bridge'
 
+if [ -f /opt/asdf-vm/asdf.sh ]; then
+  export ASDF_DIR=/opt/asdf-vm
+  export ASDF_CONFIG_FILE=$HOME/asdf/asdfrc
+  export ASDF_DATA_DIR=$HOME/asdf
+  source $ASDF_DIR/asdf.sh
+
+  # Insert autocompletion setup for your shell here.
+fi

@@ -56,6 +56,7 @@ if dein#load_state('$HOME/.cache/dein')
     call dein#add('junegunn/fzf')
     call dein#add('moll/vim-bbye')
     call dein#add('dart-lang/dart-vim-plugin')
+    call dein#add('github/copilot.vim')
 
     " You can specify revision/branch/tag.
     call dein#add('Shougo/vimshell.vim')
