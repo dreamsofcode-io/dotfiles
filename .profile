@@ -16,6 +16,7 @@ export PATH="$GOPATH/bin:$PATH"
 export PATH="$PATH:/opt/android-sdk/platform-tools"
 export PATH="$PATH:/opt/android-sdk/build-tools"
 export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:/usr/local/sbin"
 export KUBECONFIG="$HOME/.kube/config"
 
 DO_VALAR() {
