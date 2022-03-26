@@ -42,19 +42,19 @@ draw_bold_text_with_bright_colors: true
 font:
   # The normal (roman) font face to use.
   normal:
-    family: Inconsolata-dz for Powerline
+    family: JetBrainsMono Nerd Font
     # Style can be specified to pick a specific face.
     style: Regular
 
   # The bold font face
   bold:
-    family: Inconsolata-dz for Powerline
+    family: JetBrainsMono Nerd Font
     # Style can be specified to pick a specific face.
-    style: Regular
+    style: Bold
 
   # The italic font face
   italic:
-    family: Inconsolata-dz for Powerline
+    family: JetBrainsMono Nerd Font
     # Style can be specified to pick a specific face.
     # style: Regular
 
@@ -85,7 +85,6 @@ font:
 # Should display the render timer
 debug.render_timer: false
 
-#Colors (Nord)
 colors:
   # Default colors
   primary:
