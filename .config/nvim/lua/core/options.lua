@@ -30,6 +30,7 @@ opt.ruler = options.ruler
 -- disable nvim intro
 opt.shortmess:append "sI"
 
+opt.colorcolumn = options.colorcolumn
 opt.signcolumn = "yes"
 opt.splitbelow = true
 opt.splitright = true

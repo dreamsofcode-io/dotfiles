@@ -19,8 +19,8 @@ g.nvim_tree_show_icons = {
 }
 
 g.nvim_tree_icons = {
-   default = "",
-   symlink = "",
+   default = "",
+   symlink = "",
    git = {
       deleted = "",
       ignored = "◌",
@@ -31,16 +31,12 @@ g.nvim_tree_icons = {
       untracked = "★",
    },
    folder = {
-      arrow_closed = "",
-      arrow_open = "",
-      default = "",
-      open = "",
-      empty = "",
-      empty_open = "",
+      default = "",
+      empty = "",
+      empty_open = "",
+      open = "",
       symlink = "",
-      symlink_open = "",
-      symlink = "",
-      symlink_open = "",
+      symlink_open = "",
    },
 }
 

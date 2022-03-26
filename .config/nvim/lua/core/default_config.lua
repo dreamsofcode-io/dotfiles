@@ -7,6 +7,7 @@ M.options = {
    -- custom = {}
    -- general nvim/vim options , check :h optionname to know more about an option
 
+   colorcolumn = "80",
    clipboard = "unnamedplus",
    cmdheight = 1,
    ruler = false,
@@ -21,7 +22,7 @@ M.options = {
    expandtab = true,
    shiftwidth = 2,
    smartindent = true,
-   tabstop = 8,
+   tabstop = 4,
    timeoutlen = 400,
    updatetime = 250,
    undofile = true,
