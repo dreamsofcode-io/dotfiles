@@ -72,7 +72,7 @@ font:
   # the right, increase the y offset to move the glyph upward.
   glyph_offset:
     x: 0
-    y: 2
+    y: 0
 
   # Scale the font size based on the monitor's DPI. This will lead to bigger text on HiDPI
   # screens and make reading text a little easier.
@@ -210,8 +210,8 @@ theme: Catppuccin
 # You can set shell.program to the path of your favorite shell, e.g. /bin/fish.
 # Entries in shell.args are passed unmodified as arguments to the shell.
 #
-# shell:
-#   program: /bin/bash
+shell:
+  program: /bin/fish
 #   args:
 #     - --login
 # Key bindings
