@@ -5,9 +5,9 @@ if present then
 end
 
 local core_modules = {
-   "core.options",
-   "core.autocmds",
-   "core.mappings",
+   "core/options",
+   "core/autocmds",
+   "core/mappings",
 }
 
 for _, module in ipairs(core_modules) do
@@ -18,7 +18,7 @@ for _, module in ipairs(core_modules) do
 end
 
 -- non plugin mappings
-require("core.mappings").misc()
+require("core/mappings").misc()
 
 -- check if custom init.lua file exists
 if vim.fn.filereadable(vim.fn.stdpath "config" .. "/lua/custom/init.lua") == 1 then

@@ -48,7 +48,7 @@ M.options = {
 M.ui = {
    hl_override = "", -- path of your file that contains highlights
    italic_comments = false,
-   theme = "onedark", -- default theme
+   theme = "catppuccin", -- default theme
 
    -- Change terminal bg to nvim theme's bg color so it'll match well
    -- For Ex : if you have onedark set in nvchad, set onedark's bg color on your terminal
@@ -61,10 +61,10 @@ M.plugins = {
    -- enable/disable plugins (false for disable)
    status = {
       blankline = true, -- indentline stuff
-      bufferline = true, -- manage and preview opened buffers
+      bufferline = false, -- manage and preview opened buffers
       colorizer = false, -- color RGB, HEX, CSS, NAME color codes
       comment = true, -- easily (un)comment code, language aware
-      alpha = false, -- dashboard
+      alpha = true, -- dashboard
       better_escape = true, -- map to <ESC> with no lag
       feline = true, -- statusline
       gitsigns = true,

@@ -1,6 +1,6 @@
 local M = {}
 
-local chadrc_config = require("core.utils").load_config()
+local chadrc_config = require("core/utils").load_config()
 
 M.autopairs = function(override_flag)
    local present1, autopairs = pcall(require, "nvim-autopairs")

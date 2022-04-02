@@ -1,11 +1,11 @@
-local plugin_settings = require("core.utils").load_config().plugins
+local plugin_settings = require("core/utils").load_config().plugins
 local present, packer = pcall(require, plugin_settings.options.packer.init_file)
 
 if not present then
    return false
 end
 
-local override_req = require("core.utils").override_req
+local override_req = require("core/utils").override_req
 
 local plugins = {
    { "NvChad/extensions" },
@@ -183,9 +183,13 @@ local plugins = {
    },
 
    {
-      disable = not plugin_settings.status.alpha,
+      --disable = not plugin_settings.status.alpha,
       "goolord/alpha-nvim",
-      config = override_req("alpha", "plugins.configs.alpha"),
+      requires = { 'kyazdani42/nvim-web-devicons' },
+      config = function ()
+        require'alpha'.setup(require'alpha.themes.startify'.config)
+      end
+      --config = override_req("alpha", "plugins.configs.alpha"),
    },
 
    {
@@ -221,14 +225,17 @@ local plugins = {
          require("core.mappings").telescope()
       end,
    },
+
+   -- Tmux integration
+   { "christoomey/vim-tmux-navigator" },
 }
 
 --label plugins for operational assistance
-plugins = require("core.utils").label_plugins(plugins)
+plugins = require("core/utils").label_plugins(plugins)
 --remove plugins specified in chadrc
-plugins = require("core.utils").remove_default_plugins(plugins)
+plugins = require("core/utils").remove_default_plugins(plugins)
 --add plugins specified in chadrc
-plugins = require("core.utils").add_user_plugins(plugins)
+plugins = require("core/utils").add_user_plugins(plugins)
 
 return packer.startup(function(use)
    for _, v in pairs(plugins) do

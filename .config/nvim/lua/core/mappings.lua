@@ -1,4 +1,4 @@
-local utils = require "core.utils"
+local utils = require "core/utils"
 
 local config = utils.load_config()
 local map_wrapper = utils.map

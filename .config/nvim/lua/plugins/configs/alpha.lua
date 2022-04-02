@@ -80,7 +80,7 @@ default.section = {
 local M = {}
 M.setup = function(override_flag)
    if override_flag then
-      default = require("core.utils").tbl_override_req("alpha", default)
+      default = require("core/utils").tbl_override_req("alpha", default)
    end
    alpha.setup {
       layout = {

@@ -6,6 +6,10 @@ end
 
 vim.opt.completeopt = "menuone,noselect"
 
+cmp.setup {
+  preselect = cmp.PreselectMode.None
+}
+
 local default = {
    snippet = {
       expand = function(args)
