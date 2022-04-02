@@ -211,7 +211,7 @@ theme: Catppuccin
 # Entries in shell.args are passed unmodified as arguments to the shell.
 #
 shell:
-  program: /bin/fish
+  program: /bin/zsh
 #   args:
 #     - --login
 # Key bindings
