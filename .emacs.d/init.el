@@ -138,16 +138,16 @@
   :config
   (setq which-key-idle-delay 0.5))
 
-(use-package doom-themes
-  :init (load-theme 'doom-nord t))
+(use-package catppuccin-theme
+  :init (load-theme 'catppuccin t))
 
 (set-face-attribute 'default nil
-  :font "MonoLisa" 
+  :font "JetBrains Mono Nerd Font" 
   :height kraken/default-font-size 
   :weight 'medium)
 
 (set-face-attribute 'fixed-pitch nil 
-  :font "MonoLisa" 
+  :font "JetBrains Mono Nerd Font" 
   :height kraken/default-font-size)
 
 (set-face-attribute 'variable-pitch nil 
@@ -221,19 +221,19 @@
   (setq evil-auto-indent nil)
   (blackout org-indent-mode))
 
-(use-package org
-  :defer t
-  :hook (org-mode . kraken/org-mode-setup)
-  :config
-  (setq org-ellipsis " ▾"
-        org-hide-emphasis-markers t
-        org-src-fontify-natively t
-        org-src-tab-acts-natively t
-        org-edit-src-content-indentation 2
-        org-hide-block-startup nil
-        org-src-preserve-indentation nil
-        org-startup-folded 'content
-        org-cycle-separator-lines 2)
+;(use-package org
+;  :defer t
+;  :hook (org-mode . kraken/org-mode-setup)
+;  :config
+;  (setq org-ellipsis " ▾"
+;        org-hide-emphasis-markers t
+;        org-src-fontify-natively t
+;        org-src-tab-acts-natively t
+;        org-edit-src-content-indentation 2
+;        org-hide-block-startup nil
+;        org-src-preserve-indentation nil
+;        org-startup-folded 'content
+;        org-cycle-separator-lines 2)
 
   ;(setq org-modules
     ;'(org-crypt
@@ -242,28 +242,28 @@
         ;org-eshell
         ;org-irc))
 
-  (setq org-refile-targets '((nil :maxlevel . 2)
-                             (org-agenda-files :maxlevel . 2)))
+  ;(setq org-refile-targets '((nil :maxlevel . 2)
+                             ;(org-agenda-files :maxlevel . 2)))
 
-  (setq org-outline-path-complete-in-steps nil)
-  (setq org-refile-use-outline-path t)
+  ;(setq org-outline-path-complete-in-steps nil)
+  ;(setq org-refile-use-outline-path t)
 
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'org-next-visible-heading)
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'org-previous-visible-heading)
+  ;(evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'org-next-visible-heading)
+  ;(evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'org-previous-visible-heading)
 
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-j") 'org-metadown)
-  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-k") 'org-metaup)
+  ;(evil-define-key '(normal insert visual) org-mode-map (kbd "M-j") 'org-metadown)
+  ;(evil-define-key '(normal insert visual) org-mode-map (kbd "M-k") 'org-metaup)
 
-  (org-babel-do-load-languages
-    'org-babel-load-languages
-    '((emacs-lisp . t)
-      (ledger . t)))
+  ;(org-babel-do-load-languages
+    ;'org-babel-load-languages
+    ;'((emacs-lisp . t)
+      ;(ledger . t)))
 
-  (push '("conf-unix" . conf-unix) org-src-lang-modes)
+  ;(push '("conf-unix" . conf-unix) org-src-lang-modes)
 
   ;; NOTE: Subsequent sections are still part of this use-package block!
 
-(require 'kraken-org)
+;(require 'kraken-org)
 ;(require 'kraken-workflow)
 
 ;; Since we don't want to disable org-confirm-babel-evaluate all
@@ -276,12 +276,12 @@
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'kraken/org-babel-tangle-dont-ask
                                               'run-at-end 'only-in-org-mode)))
 
-(use-package org-superstar
-  :after org
-  :hook (org-mode . org-superstar-mode)
-  :custom
-  (org-superstar-remove-leading-stars t)
-  (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
+;(use-package org-superstar
+  ;:after org
+  ;:hook (org-mode . org-superstar-mode)
+  ;:custom
+  ;(org-superstar-remove-leading-stars t)
+  ;(org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 ;; Replace list hyphen with dot
 ;; (font-lock-add-keywords 'org-mode
@@ -289,32 +289,33 @@
 ;;                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 ;; Increase the size of various headings
-(set-face-attribute 'org-document-title nil :font "Cantarell" :weight 'bold :height 1.3)
-(dolist (face '((org-level-1 . 1.2)
-                (org-level-2 . 1.1)
-                (org-level-3 . 1.05)
-                (org-level-4 . 1.0)
-                (org-level-5 . 1.1)
-                (org-level-6 . 1.1)
-                (org-level-7 . 1.1)
-                (org-level-8 . 1.1)))
-  (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+;(set-face-attribute 'org-document-title nil :font "Cantarell" :weight 'bold :height 1.3)
+;(dolist (face '((org-level-1 . 1.2)
+;                (org-level-2 . 1.1)
+;                (org-level-3 . 1.05)
+;                (org-level-4 . 1.0)
+;                (org-level-5 . 1.1)
+;                (org-level-6 . 1.1)
+;                (org-level-7 . 1.1)
+;                (org-level-8 . 1.1)))
+;  (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
 ;; Make sure org-indent face is available
-(require 'org-indent)
+;(require 'org-indent)
 
 ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-(set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
-(set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
-(set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
-(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+;(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+;(set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
+;(set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+;(set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+;(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+;(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+;(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+;(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+;(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 
 ;; TODO: Others to consider
+
 ;; '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
 ;; '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
 ;; '(org-property-value ((t (:inherit fixed-pitch))) t)
@@ -324,32 +325,33 @@
 ;; '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 
 ;; This is needed as of Org 9.2
-(require 'org-tempo)
+  ;(require 'org-tempo)
 
-(add-to-list 'org-structure-template-alist '("sh" . "src sh"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
-(add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
-(add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
-(add-to-list 'org-structure-template-alist '("json" . "src json"))
+  ;(add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+  ;(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  ;(add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
+  ;(add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
+  ;(add-to-list 'org-structure-template-alist '("py" . "src python"))
+  ;(add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
+  ;(add-to-list 'org-structure-template-alist '("json" . "src json"))
+;
 
-(use-package org-pomodoro
-  :after org
-  :config
-  (setq org-pomodoro-start-sound "~/.emacs.d/sounds/focus_bell.wav")
-  (setq org-pomodoro-short-break-sound "~/.emacs.d/sounds/three_beeps.wav")
-  (setq org-pomodoro-long-break-sound "~/.emacs.d/sounds/three_beeps.wav")
-  (setq org-pomodoro-finished-sound "~/.emacs.d/sounds/meditation_bell.wav")
+;(use-package org-pomodoro
+  ;:after org
+  ;:config
+  ;(setq org-pomodoro-start-sound "~/.emacs.d/sounds/focus_bell.wav")
+  ;(setq org-pomodoro-short-break-sound "~/.emacs.d/sounds/three_beeps.wav")
+  ;(setq org-pomodoro-long-break-sound "~/.emacs.d/sounds/three_beeps.wav")
+  ;(setq org-pomodoro-finished-sound "~/.emacs.d/sounds/meditation_bell.wav")
 
-  (kraken/leader-key-def
-    "op"  '(org-pomodoro :which-key "pomodoro")))
+  ;(kraken/leader-key-def
+    ;"op"  '(org-pomodoro :which-key "pomodoro")))
 
-(require 'org-protocol)
+;(require 'org-protocol)
 
-(defun kraken/search-org-files ()
-  (interactive)
-  (counsel-rg "" "~/Notes" nil "Search Notes: "))
+;(defun kraken/search-org-files ()
+  ;(interactive)
+  ;(counsel-rg "" "~/Notes" nil "Search Notes: "))
 
 (use-package evil-org
   :after org
@@ -375,7 +377,7 @@
   "ox"  '(org-export-dispatch t :which-key "export"))
 
 ;; This ends the use-package org-mode block
-)
+;)
 
 (kraken/leader-key-def
   "c" '(:ignore t :which-key "code"))
@@ -855,24 +857,24 @@
 (kraken/leader-key-def
   "a"  '(:ignore t :which-key "apps"))
 
-(use-package calfw
-  :commands cfw:open-org-calendar
-  :config
-  (setq cfw:fchar-junction ?╋
-        cfw:fchar-vertical-line ?┃
-        cfw:fchar-horizontal-line ?━
-        cfw:fchar-left-junction ?┣
-        cfw:fchar-right-junction ?┫
-        cfw:fchar-top-junction ?┯
-        cfw:fchar-top-left-corner ?┏
-        cfw:fchar-top-right-corner ?┓)
+;(use-package calfw
+  ;:commands cfw:open-org-calendar
+  ;:config
+  ;(setq cfw:fchar-junction ?╋
+  ;      cfw:fchar-vertical-line ?┃
+  ;      cfw:fchar-horizontal-line ?━
+  ;      cfw:fchar-left-junction ?┣
+  ;      cfw:fchar-right-junction ?┫
+  ;      cfw:fchar-top-junction ?┯
+  ;      cfw:fchar-top-left-corner ?┏
+  ;      cfw:fchar-top-right-corner ?┓)
 
-  (use-package calfw-org
-    :config
-    (setq cfw:org-agenda-schedule-args '(:timestamp))))
+  ;(use-package calfw-org
+  ;  :config
+  ;  (setq cfw:org-agenda-schedule-args '(:timestamp))))
 
-(kraken/leader-key-def
-  "ac"  '(cfw:open-org-calendar :which-key "calendar"))
+;(kraken/leader-key-def
+  ;"ac"  '(cfw:open-org-calendar :which-key "calendar"))
 
 (require 'init-key)
 (require 'init-ui)
