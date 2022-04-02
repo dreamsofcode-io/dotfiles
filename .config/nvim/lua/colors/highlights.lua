@@ -1,8 +1,8 @@
 local cmd = vim.cmd
 
-local override = require("core.utils").load_config().ui.hl_override
+local override = require("core/utils").load_config().ui.hl_override
 local colors = require("colors").get()
-local ui = require("core.utils").load_config().ui
+local ui = require("core/utils").load_config().ui
 
 local black = colors.black
 local black2 = colors.black2
@@ -26,9 +26,9 @@ local orange = colors.orange
 local one_bg3 = colors.one_bg3
 
 -- functions for setting highlights
-local fg = require("core.utils").fg
-local fg_bg = require("core.utils").fg_bg
-local bg = require("core.utils").bg
+local fg = require("core/utils").fg
+local fg_bg = require("core/utils").fg_bg
+local bg = require("core/utils").bg
 
 -- Comments
 if ui.italic_comments then

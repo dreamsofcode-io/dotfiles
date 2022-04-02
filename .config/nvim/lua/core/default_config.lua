@@ -1,6 +1,3 @@
--- IMPORTANT NOTE : This is default config, so dont change anything here.
--- use custom/chadrc.lua instead
-
 local M = {}
 
 M.options = {
@@ -51,8 +48,8 @@ M.ui = {
    theme = "catppuccin", -- default theme
 
    -- Change terminal bg to nvim theme's bg color so it'll match well
-   -- For Ex : if you have onedark set in nvchad, set onedark's bg color on your terminal
-   transparency = false,
+   -- For Ex : if you have theme with same background, set onedark's bg color on your terminal
+   transparency = true,
 }
 
 ---- PLUGIN OPTIONS ----

@@ -139,9 +139,9 @@ M.hide_statusline = function()
 end
 
 M.load_config = function()
-   local conf = require "core.default_config"
+   local conf = require "core/default_config"
 
-   local chadrcExists, change = pcall(require, "custom.chadrc")
+   local chadrcExists, change = pcall(require, "custom/chadrc")
 
    -- if chadrc exists , then merge its table into the default config's
 
