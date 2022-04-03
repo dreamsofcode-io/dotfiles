@@ -46,9 +46,9 @@ if ! type open > /dev/null ; then
 fi
 
 # Start the gpg-agent if not already running
-if ! pgrep -x -u "${USER}" gpg-agent >/dev/null 2>&1; then
-  gpg-connect-agent /bye >/dev/null 2>&1
-fi
+#if ! pgrep -x -u "${USER}" gpg-agent >/dev/null 2>&1; then
+#  gpg-connect-agent /bye >/dev/null 2>&1
+#fi
 
 export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
