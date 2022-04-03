@@ -24,6 +24,8 @@
 
 (straight-use-package 'use-package)
 
+(straight-use-package 'org)
+
 (push "~/.emacs.d/lisp" load-path)
 
 (server-start)
@@ -221,26 +223,26 @@
   (setq evil-auto-indent nil)
   (blackout org-indent-mode))
 
-;(use-package org
-;  :defer t
-;  :hook (org-mode . kraken/org-mode-setup)
-;  :config
-;  (setq org-ellipsis " ▾"
-;        org-hide-emphasis-markers t
-;        org-src-fontify-natively t
-;        org-src-tab-acts-natively t
-;        org-edit-src-content-indentation 2
-;        org-hide-block-startup nil
-;        org-src-preserve-indentation nil
-;        org-startup-folded 'content
-;        org-cycle-separator-lines 2)
+(use-package org
+  :defer t
+  ;:hook (org-mode . kraken/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾"
+        org-hide-emphasis-markers t
+        org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-edit-src-content-indentation 2
+        org-hide-block-startup nil
+        org-src-preserve-indentation nil
+        org-startup-folded 'content
+        org-cycle-separator-lines 2)
 
-  ;(setq org-modules
-    ;'(org-crypt
-        ;org-habit
-        ;org-bookmark
-        ;org-eshell
-        ;org-irc))
+  (setq org-modules
+    '(org-crypt
+        org-habit
+        org-bookmark
+        org-eshell
+        org-irc))
 
   ;(setq org-refile-targets '((nil :maxlevel . 2)
                              ;(org-agenda-files :maxlevel . 2)))
@@ -263,7 +265,7 @@
 
   ;; NOTE: Subsequent sections are still part of this use-package block!
 
-;(require 'kraken-org)
+(require 'kraken-org)
 ;(require 'kraken-workflow)
 
 ;; Since we don't want to disable org-confirm-babel-evaluate all
@@ -276,17 +278,17 @@
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'kraken/org-babel-tangle-dont-ask
                                               'run-at-end 'only-in-org-mode)))
 
-;(use-package org-superstar
-  ;:after org
-  ;:hook (org-mode . org-superstar-mode)
-  ;:custom
-  ;(org-superstar-remove-leading-stars t)
-  ;(org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
+(use-package org-superstar
+  :after org
+  :hook (org-mode . org-superstar-mode)
+  :custom
+  (org-superstar-remove-leading-stars t)
+  (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 ;; Replace list hyphen with dot
-;; (font-lock-add-keywords 'org-mode
-;;                         '(("^ *\\([-]\\) "
-;;                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+(font-lock-add-keywords 'org-mode
+                         '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 ;; Increase the size of various headings
 ;(set-face-attribute 'org-document-title nil :font "Cantarell" :weight 'bold :height 1.3)
@@ -301,7 +303,7 @@
 ;  (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
 ;; Make sure org-indent face is available
-;(require 'org-indent)
+(require 'org-indent)
 
 ;; Ensure that anything that should be fixed-pitch in Org files appears that way
 ;(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -325,16 +327,15 @@
 ;; '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 
 ;; This is needed as of Org 9.2
-  ;(require 'org-tempo)
+(require 'org-tempo)
 
-  ;(add-to-list 'org-structure-template-alist '("sh" . "src sh"))
-  ;(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  ;(add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
-  ;(add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
-  ;(add-to-list 'org-structure-template-alist '("py" . "src python"))
-  ;(add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
-  ;(add-to-list 'org-structure-template-alist '("json" . "src json"))
-;
+(add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
+(add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
+(add-to-list 'org-structure-template-alist '("json" . "src json"))
 
 ;(use-package org-pomodoro
   ;:after org
@@ -347,11 +348,11 @@
   ;(kraken/leader-key-def
     ;"op"  '(org-pomodoro :which-key "pomodoro")))
 
-;(require 'org-protocol)
+(require 'org-protocol)
 
-;(defun kraken/search-org-files ()
-  ;(interactive)
-  ;(counsel-rg "" "~/Notes" nil "Search Notes: "))
+(defun kraken/search-org-files ()
+  (interactive)
+  (counsel-rg "" "~/Notes" nil "Search Notes: "))
 
 (use-package evil-org
   :after org
@@ -377,7 +378,7 @@
   "ox"  '(org-export-dispatch t :which-key "export"))
 
 ;; This ends the use-package org-mode block
-;)
+)
 
 (kraken/leader-key-def
   "c" '(:ignore t :which-key "code"))
