@@ -1,13 +1,12 @@
-# Load in SSH for the yubikey
-# first load the GPG_TTY either from the TTY var (fast), or the tty command
-# if $TTY is not set.
+# Set the GPG_TTY to be the same as the TTY, either via the env var
+# or via the tty command.
 if [ -n "$TTY" ]; then
   export GPG_TTY=$(tty)
 else
   export GPG_TTY="$TTY"
 fi
 
-# Set the SSH_AUTH_SOCK via the gpg command
+# SSH_AUTH_SOCK set to GPG to enable using gpgagent as the ssh agent.
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 gpgconf --launch gpg-agent
 
@@ -20,12 +19,27 @@ fi
 
 export PATH="/usr/local/bin:/usr/bin"
 
-source "${HOME}/.zgen/zgen.zsh"
-source "${HOME}/.config/zgen.zsh"
+# Download Znap, if it's not there yet.
+[[ -f ~/.config/zsh-snap/znap.zsh ]] ||
+    git clone --depth 1 -- \
+        https://github.com/marlonrichert/zsh-snap.git ~/.config/zsh-snap
+
+source ~/.config/zsh-snap/znap.zsh  # Start Znap
+
+znap fpath _kubectl 'kubectl completion  zsh'
+
+znap source romkatv/powerlevel10k
+znap source zsh-users/zsh-completions
+znap source zsh-users/zsh-autosuggestions
+znap source zsh-users/zsh-syntax-highlighting
+znap install ohmyzsh/ohmyzsh
+znap source ohmyzsh/ohmyzsh plugins/git
+znap source ohmyzsh/ohmyzsh plugins/sudo
+znap source ohmyzsh/ohmyzsh plugins/kubectx
+znap source ohmyzsh/ohmyzsh plugins/command-not-found
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-POWERLINE_ZSH_ROOT=""
 
 source $HOME/.profile
 source $HOME/.config/tmuxinator/tmuxinator.zsh
@@ -44,22 +58,15 @@ export PATH="$PATH:/home/elliott/Library/flutter/bin"
 alias sudo='sudo '
 export LD_LIBRARY_PATH=/usr/local/lib
 
+# Completions
+
 source <(doctl completion zsh)
 
 source <(kubectl completion zsh)
 
-#. $HOME/.asdf/asdf.sh
-#. $HOME/.asdf/completions/asdf.bash
-
+# P10k customizations
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
-
-# tabtab source for serverless package
-# uninstall by removing these lines or running `tabtab uninstall serverless`
-[[ -f /home/elliott/Projects/Modal/aws/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/elliott/Projects/Modal/aws/node_modules/tabtab/.completions/serverless.zsh
-# tabtab source for sls package
-# uninstall by removing these lines or running `tabtab uninstall sls`
-[[ -f /home/elliott/Projects/Modal/aws/node_modules/tabtab/.completions/sls.zsh ]] && . /home/elliott/Projects/Modal/aws/node_modules/tabtab/.completions/sls.zsh
 
 # Fix for password store
 export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
@@ -68,18 +75,7 @@ export NVM_DIR="$HOME/.nvm"                            # You can change this if 
 export NVM_SOURCE="/usr/share/nvm"                     # The AUR package installs it to here.
 [ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"  # Load N
 
-# Using rbenv
-# eval "$(rbenv init -)"
-
-#bindkey "^V" backward-char
-
-#bindkey -v
-#bindkey -v '^?' backward-delete-char
-#bindkey "^R" history-incremental-search-backward
-#bindkey "^N" down-line-or-search
-#bindkey "^P" up-line-or-search
 bindkey "^P" up-line-or-beginning-search
 bindkey "^N" down-line-or-beginning-search
 
 [ -s "/home/elliott/.svm/svm.sh" ] && source "/home/elliott/.svm/svm.sh"
-
