@@ -48,6 +48,11 @@ Next up, we want to set the SSH_AUTH_SOCK env var as per the guide at https://gi
   export PATH="/usr/local/bin:/usr/bin"
 #+end_src
 
+
+* ZShell Plugin Manager
+
+Simply set the one you want to have begin_src of sh
+
 * ZGen
 
 #+begin_src shell
@@ -55,33 +60,39 @@ Next up, we want to set the SSH_AUTH_SOCK env var as per the guide at https://gi
   source "${HOME}/.config/zgen.zsh"
 #+end_src
 
-#+begin_src shell
-      ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-      # Download Zinit, if it's not there yet
-      if [ ! -d "$ZINIT_HOME" ]; then
-         mkdir -p "$(dirname $ZINIT_HOME)"
-         git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-      fi
-
-      source "${ZINIT_HOME}/zinit.zsh"
-
-      zinit ice depth=1; zinit light romkatv/powerlevel10k
-      zinit snippet OMZP::git
-      zinit snippet OMZP::sudo
-      zinit snippet OMZP::pass
-      zinit snippet OMZP::aws
-      zinit snippet OMZP::kubectl
-      zinit snippet OMZP::kubectx
-      zinit snippet OMZP::rust
-      zinit snippet OMZP::command-not-found
-
-      zinit light marlonrichert/zsh-autocomplete
-      zinit light zsh-users/zsh-completions
-      zinit light zsh-users/zsh-autosuggestions
-      zinit light zsh-users/zsh-syntax-highlighting
-#+end_src
+* Zinit
 
 #+begin_src sh
+  autoload -Uz compinit
+  compinit
+
+  ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+  # Download Zinit, if it's not there yet
+  if [ ! -d "$ZINIT_HOME" ]; then
+     mkdir -p "$(dirname $ZINIT_HOME)"
+     git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+  fi
+
+  source "${ZINIT_HOME}/zinit.zsh"
+
+  zinit light ohmyzsh/ohmyzsh
+  zinit ice depth=1; zinit light romkatv/powerlevel10k
+  zinit snippet OMZP::git
+  zinit snippet OMZP::sudo
+  zinit snippet OMZP::aws
+  zinit snippet OMZP::kubectl
+  zinit snippet OMZP::kubectx
+  zinit snippet OMZP::rust
+  zinit snippet OMZP::command-not-found
+
+  zinit light zsh-users/zsh-completions
+  zinit light zsh-users/zsh-autosuggestions
+  zinit light zsh-users/zsh-syntax-highlighting
+#+end_src
+
+* Znap
+
+#+begin_src shell
    # Download Znap, if it's not there yet.
    [[ -f ~/.config/zsh-snap/znap.zsh ]] ||
        git clone --depth 1 -- \

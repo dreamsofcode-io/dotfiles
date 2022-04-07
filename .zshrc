@@ -19,24 +19,31 @@ fi
 
 export PATH="/usr/local/bin:/usr/bin"
 
-# Download Znap, if it's not there yet.
-[[ -f ~/.config/zsh-snap/znap.zsh ]] ||
-    git clone --depth 1 -- \
-        https://github.com/marlonrichert/zsh-snap.git ~/.config/zsh-snap
+autoload -Uz compinit
+compinit
 
-source ~/.config/zsh-snap/znap.zsh  # Start Znap
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+# Download Zinit, if it's not there yet
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
 
-znap fpath _kubectl 'kubectl completion  zsh'
+source "${ZINIT_HOME}/zinit.zsh"
 
-znap source romkatv/powerlevel10k
-znap source zsh-users/zsh-completions
-znap source zsh-users/zsh-autosuggestions
-znap source zsh-users/zsh-syntax-highlighting
-znap install ohmyzsh/ohmyzsh
-znap source ohmyzsh/ohmyzsh plugins/git
-znap source ohmyzsh/ohmyzsh plugins/sudo
-znap source ohmyzsh/ohmyzsh plugins/kubectx
-znap source ohmyzsh/ohmyzsh plugins/command-not-found
+zinit light ohmyzsh/ohmyzsh
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::aws
+zinit snippet OMZP::kubectl
+zinit snippet OMZP::kubectx
+zinit snippet OMZP::rust
+zinit snippet OMZP::command-not-found
+
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-syntax-highlighting
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
