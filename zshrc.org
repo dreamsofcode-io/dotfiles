@@ -151,16 +151,26 @@ Simply set the one you want to have begin_src of sh
   # P10k customizations
   # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
   [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+#+end_src
 
-  # Fix for password store
-  export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
+* Custom config
 
-  export NVM_DIR="$HOME/.nvm"                            # You can change this if you want.
-  export NVM_SOURCE="/usr/share/nvm"                     # The AUR package installs it to here.
-  [ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"  # Load N
+#+begin_src sh
+    # Fix for password store
+    export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
 
-  bindkey "^P" up-line-or-beginning-search
-  bindkey "^N" down-line-or-beginning-search
+    export NVM_DIR="$HOME/.nvm"                            # You can change this if you want.
+    export NVM_SOURCE="/usr/share/nvm"                     # The AUR package installs it to here.
+    [ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"  # Load N
 
-  [ -s "/home/elliott/.svm/svm.sh" ] && source "/home/elliott/.svm/svm.sh"
+    bindkey "^P" up-line-or-beginning-search
+    bindkey "^N" down-line-or-beginning-search
+
+    [ -s "/home/elliott/.svm/svm.sh" ] && source "/home/elliott/.svm/svm.sh"
+#+end_src
+
+* Starship
+
+#+begin_src shell
+  eval "$(starship init zsh)"
 #+end_src
