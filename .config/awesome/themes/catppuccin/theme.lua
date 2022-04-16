@@ -39,7 +39,7 @@ local sky = "#89dceb"
 
 theme.pink = pink
 
-theme.font = "JetBrains Mono Nerd Font 12"
+theme.font = "Sans 12"
 
 theme.bg_normal     = black2
 theme.bg_focus      = black2
@@ -79,6 +79,9 @@ theme.taglist_squares_sel = theme_assets.taglist_squares_sel(
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
     taglist_square_size, theme.fg_normal
 )
+
+theme.taglist_tag_size = dpi(16)
+theme.taglist_font = "JetBrains Mono Nerd Font 12"
 
 -- Variables set for theming notifications:
 -- notification_font

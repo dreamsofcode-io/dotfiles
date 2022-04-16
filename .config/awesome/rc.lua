@@ -200,7 +200,6 @@ awful.screen.connect_for_each_screen(function(s)
           --shape = gears.shape.powerline,
         },
         layout   = {
-          spacing = -16,
           layout  = wibox.layout.fixed.horizontal
         },
         widget_template = {
@@ -209,12 +208,12 @@ awful.screen.connect_for_each_screen(function(s)
                 {
                     id     = "text_role",
                     widget = wibox.widget.textbox,
-                    font = "JetBrains Mono Nerd Font 24",
+                    forced_width = beautiful.taglist_tag_size,
                 },
                 layout = wibox.layout.fixed.horizontal,
             },
-            left  = 16,
-            right = 16,
+            left  = beautiful.taglist_tag_size,
+            right = beautiful.taglist_tag_size,
             widget = wibox.container.margin
         },
         id     = "background_role",
