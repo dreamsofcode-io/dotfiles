@@ -228,6 +228,7 @@ local plugins = {
 
    -- Tmux integration
    { "christoomey/vim-tmux-navigator" },
+   { "mboughaba/i3config.vim"},
 }
 
 --label plugins for operational assistance
