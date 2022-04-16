@@ -46,7 +46,8 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_configuration_dir() .. "themes/default/theme.lua")
+beautiful.init(gears.filesystem.get_configuration_dir() .. "themes/catppuccin/theme.lua")
+--beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "alacritty"
@@ -162,6 +163,10 @@ local function set_wallpaper(s)
     end
 end
 
+local function custom_shape(cr, width, height)
+  gears.shape.rounded_rect(cr, width, height, 4)
+end
+
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
@@ -169,8 +174,12 @@ awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
+    local names = {"", "", "", "", "", ""}
+    local l = awful.layout.suit
+    local layouts = { l.tile, l.tile, l.tile, l.tile, l.tile, l.tile}
+
     -- Each screen has its own tag table.
-    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    awful.tag(names, s, layouts)
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -186,27 +195,58 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytaglist = awful.widget.taglist {
         screen  = s,
         filter  = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons
+        buttons = taglist_buttons,
+        style = {
+          --shape = gears.shape.powerline,
+        },
+        layout   = {
+          spacing = -16,
+          layout  = wibox.layout.fixed.horizontal
+        },
+        widget_template = {
+        {
+            {
+                {
+                    id     = "text_role",
+                    widget = wibox.widget.textbox,
+                    font = "JetBrains Mono Nerd Font 24",
+                },
+                layout = wibox.layout.fixed.horizontal,
+            },
+            left  = 16,
+            right = 16,
+            widget = wibox.container.margin
+        },
+        id     = "background_role",
+        widget = wibox.container.background,
+      },
     }
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
         screen  = s,
-        filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons
+        --filter  = awful.widget.tasklist.filter.currenttags,
+        buttons = tasklist_buttons,
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
+   s.mywibox = awful.wibar({ 
+     position = "top",
+     screen = s,
+     margins = {
+       top = beautiful.useless_gap * 2,
+       left = beautiful.useless_gap * 2,
+       right = beautiful.useless_gap * 2,
+     }
+   })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-            mylauncher,
+            -- mylauncher,
             s.mytaglist,
-            s.mypromptbox,
         },
         s.mytasklist, -- Middle widget
         { -- Right widgets
