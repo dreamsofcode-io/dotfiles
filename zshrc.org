@@ -63,8 +63,7 @@ Simply set the one you want to have begin_src of sh
 * Zinit
 
 #+begin_src sh
-  autoload -Uz compinit
-  compinit
+  autoload -Uz compinit && compinit
 
   ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
   # Download Zinit, if it's not there yet
@@ -167,6 +166,14 @@ Simply set the one you want to have begin_src of sh
     bindkey "^N" down-line-or-beginning-search
 
     [ -s "/home/elliott/.svm/svm.sh" ] && source "/home/elliott/.svm/svm.sh"
+#+end_src
+
+* Capslock
+Given that the capslock key should be removed entirely (using caps2esc-no-caps from the AUR). Then we need a way to be able to toggle the capslock key (in the event it get's stuck on or something).
+
+#+begin_src sh
+  # Capslock command
+  alias capslock="sudo killall -USR1 caps2esc"
 #+end_src
 
 * Starship

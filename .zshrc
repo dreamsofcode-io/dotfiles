@@ -19,8 +19,7 @@ fi
 
 export PATH="/usr/local/bin:/usr/bin"
 
-autoload -Uz compinit
-compinit
+autoload -Uz compinit && compinit
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 # Download Zinit, if it's not there yet
@@ -86,3 +85,10 @@ bindkey "^P" up-line-or-beginning-search
 bindkey "^N" down-line-or-beginning-search
 
 [ -s "/home/elliott/.svm/svm.sh" ] && source "/home/elliott/.svm/svm.sh"
+
+# Capslock command
+alias capslock="sudo killall -USR1 caps2esc"
+
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    export MOZ_ENABLE_WAYLAND=1
+fi
