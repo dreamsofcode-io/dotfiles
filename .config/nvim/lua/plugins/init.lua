@@ -187,7 +187,7 @@ local plugins = {
       "goolord/alpha-nvim",
       requires = { 'kyazdani42/nvim-web-devicons' },
       config = function ()
-        require'alpha'.setup(require'alpha.themes.startify'.config)
+        --require'alpha'.setup(require'alpha.themes.startify'.config)
       end
       --config = override_req("alpha", "plugins.configs.alpha"),
    },
@@ -228,6 +228,7 @@ local plugins = {
 
    -- Tmux integration
    { "christoomey/vim-tmux-navigator" },
+   -- i3 config syntax highlighting
    { "mboughaba/i3config.vim"},
 }
 

@@ -48,7 +48,7 @@ M.ui = {
    theme = "catppuccin", -- default theme
 
    -- Change terminal bg to nvim theme's bg color so it'll match well
-   -- For Ex : if you have theme with same background, set onedark's bg color on your terminal
+   -- e.g. if you have theme with same background, set onedark's bg color on your terminal
    transparency = true,
 }
 
@@ -84,7 +84,7 @@ M.plugins = {
       },
       nvimtree = {
          -- packerCompile required after changing lazy_load
-         lazy_load = true,
+         lazy_load = false,
       },
       luasnip = {
          snippet_path = {},
