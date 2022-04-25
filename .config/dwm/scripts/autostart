@@ -4,8 +4,15 @@
 # add your autostart stuffs here
 xbacklight -set 5 &
 xmodmap ~/.xmodmap-sid &
+
+# Start up the compositor
 picom &
+# Start up the notification daemon
+dunst &
+
 xrdb merge ~/.Xresources &
+
+# Load the wallpaper
 feh --bg-fill ~/Pictures/wall/pink-cat.png &
 
 # run bar script and dwm ( do not remove this )
