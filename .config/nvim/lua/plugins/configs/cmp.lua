@@ -6,26 +6,43 @@ end
 
 vim.opt.completeopt = "menuone,noselect"
 
-cmp.setup {
-  preselect = cmp.PreselectMode.None
-}
+local function border(hl_name)
+   return {
+      { "╭", hl_name },
+      { "─", hl_name },
+      { "╮", hl_name },
+      { "│", hl_name },
+      { "╯", hl_name },
+      { "─", hl_name },
+      { "╰", hl_name },
+      { "│", hl_name },
+   }
+end
 
-local default = {
+local cmp_window = require "cmp.utils.window"
+
+function cmp_window:has_scrollbar()
+   return false
+end
+
+local options = {
+   window = {
+      completion = {
+         border = border "CmpBorder",
+      },
+      documentation = {
+         border = border "CmpDocBorder",
+      },
+   },
    snippet = {
       expand = function(args)
          require("luasnip").lsp_expand(args.body)
       end,
    },
    formatting = {
-      format = function(entry, vim_item)
+      format = function(_, vim_item)
          local icons = require "plugins.configs.lspkind_icons"
          vim_item.kind = string.format("%s %s", icons[vim_item.kind], vim_item.kind)
-
-         vim_item.menu = ({
-            nvim_lsp = "[LSP]",
-            nvim_lua = "[Lua]",
-            buffer = "[BUF]",
-         })[entry.source.name]
 
          return vim_item
       end,
@@ -49,7 +66,10 @@ local default = {
          else
             fallback()
          end
-      end, { "i", "s" }),
+      end, {
+         "i",
+         "s",
+      }),
       ["<S-Tab>"] = cmp.mapping(function(fallback)
          if cmp.visible() then
             cmp.select_prev_item()
@@ -58,7 +78,10 @@ local default = {
          else
             fallback()
          end
-      end, { "i", "s" }),
+      end, {
+         "i",
+         "s",
+      }),
    },
    sources = {
       { name = "nvim_lsp" },
@@ -69,12 +92,7 @@ local default = {
    },
 }
 
-local M = {}
-M.setup = function(override_flag)
-   if override_flag then
-      default = require("core.utils").tbl_override_req("nvim_cmp", default)
-   end
-   cmp.setup(default)
-end
+-- check for any override
+options = nvchad.load_override(options, "hrsh7th/nvim-cmp")
 
-return M
+cmp.setup(options)

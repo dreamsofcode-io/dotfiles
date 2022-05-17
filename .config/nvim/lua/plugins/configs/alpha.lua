@@ -32,9 +32,9 @@ local function button(sc, txt, keybind)
    }
 end
 
-local default = {}
+local options = {}
 
-default.ascii = {
+local ascii = {
    "   ⣴⣶⣤⡤⠦⣤⣀⣤⠆     ⣈⣭⣿⣶⣿⣦⣼⣆          ",
    "    ⠉⠻⢿⣿⠿⣿⣿⣶⣦⠤⠄⡠⢾⣿⣿⡿⠋⠉⠉⠻⣿⣿⡛⣦       ",
    "          ⠈⢿⣿⣟⠦ ⣾⣿⣿⣷    ⠻⠿⢿⣿⣧⣄     ",
@@ -48,16 +48,16 @@ default.ascii = {
    "       ⠻⣿⣿⣿⣿⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⢀⣀⣤⣾⡿⠃     ",
 }
 
-default.header = {
+options.header = {
    type = "text",
-   val = default.ascii,
+   val = ascii,
    opts = {
       position = "center",
       hl = "AlphaHeader",
    },
 }
 
-default.buttons = {
+options.buttons = {
    type = "group",
    val = {
       button("SPC f f", "  Find File  ", ":Telescope find_files<CR>"),
@@ -72,25 +72,19 @@ default.buttons = {
    },
 }
 
-default.section = {
-   header = default.header,
-   buttons = default.buttons,
+options = nvchad.load_override(options, "goolord/alpha-nvim")
+
+-- dynamic header padding
+local fn = vim.fn
+local marginTopPercent = 0.3
+local headerPadding = fn.max { 2, fn.floor(fn.winheight(0) * marginTopPercent) }
+
+alpha.setup {
+   layout = {
+      { type = "padding", val = headerPadding },
+      options.header,
+      { type = "padding", val = 2 },
+      options.buttons,
+   },
+   opts = {},
 }
-
-local M = {}
-M.setup = function(override_flag)
-   if override_flag then
-      default = require("core/utils").tbl_override_req("alpha", default)
-   end
-   alpha.setup {
-      layout = {
-         { type = "padding", val = 5 },
-         default.section.header,
-         { type = "padding", val = 2 },
-         default.section.buttons,
-      },
-      opts = {},
-   }
-end
-
-return M

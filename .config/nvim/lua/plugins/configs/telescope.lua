@@ -4,7 +4,7 @@ if not present then
    return
 end
 
-local default = {
+local options = {
    defaults = {
       vimgrep_arguments = {
          "rg",
@@ -50,24 +50,21 @@ local default = {
       qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
       -- Developer configurations: Not meant for general override
       buffer_previewer_maker = require("telescope.previewers").buffer_previewer_maker,
+      mappings = {
+         n = { ["q"] = require("telescope.actions").close },
+      },
    },
+
+   extensions_list = { "themes", "terms" },
 }
 
-local M = {}
-M.setup = function(override_flag)
-   if override_flag then
-      default = require("core.utils").tbl_override_req("telescope", default)
+-- check for any override
+options = nvchad.load_override(options, "nvim-telescope/telescope.nvim")
+telescope.setup(options)
+
+-- load extensions
+pcall(function()
+   for _, ext in ipairs(options.extensions_list) do
+      telescope.load_extension(ext)
    end
-
-   telescope.setup(default)
-
-   local extensions = { "themes", "terms" }
-
-   pcall(function()
-      for _, ext in ipairs(extensions) do
-         telescope.load_extension(ext)
-      end
-   end)
-end
-
-return M
+end)

@@ -1,20 +1,73 @@
-local settings=require("core.utils").load_config().options.nvChad
--- uncomment this if you want to open nvim with a dir
--- vim.cmd [[ autocmd BufEnter * if &buftype != "terminal" | lcd %:p:h | endif ]]
+local autocmd = vim.api.nvim_create_autocmd
+
+-- Disable statusline in dashboard
+autocmd("FileType", {
+   pattern = "alpha",
+   callback = function()
+      vim.opt.laststatus = 0
+   end,
+})
+
+autocmd("BufUnload", {
+   buffer = 0,
+   callback = function()
+      vim.opt.laststatus = 3
+   end,
+})
+
+-- open nvim with a dir while still lazy loading nvimtree
+-- autocmd("BufEnter", {
+--    callback = function()
+--       if vim.api.nvim_buf_get_option(0, "buftype") ~= "terminal" then
+--          vim.cmd "lcd %:p:h"
+--       end
+--    end,
+-- })
 
 -- Use relative & absolute line numbers in 'n' & 'i' modes respectively
--- vim.cmd[[ au InsertEnter * set norelativenumber ]]
--- vim.cmd[[ au InsertLeave * set relativenumber ]]
-
--- Don't show any numbers inside terminals
-if not settings.terminal_numbers then
-   vim.cmd [[ au TermOpen term://* setlocal nonumber norelativenumber | setfiletype terminal ]]
-end
-
--- Don't show status line on certain windows
-vim.cmd [[ autocmd BufEnter,BufRead,BufWinEnter,FileType,WinEnter * lua require("core.utils").hide_statusline() ]]
+-- autocmd("InsertEnter", {
+--    callback = function()
+--       vim.opt.relativenumber = false
+--    end,
+-- })
+-- autocmd("InsertLeave", {
+--    callback = function()
+--       vim.opt.relativenumber = true
+--    end,
+-- })
 
 -- Open a file from its last left off position
--- vim.cmd [[ au BufReadPost * if expand('%:p') !~# '\m/\.git/' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif ]]
+-- autocmd("BufReadPost", {
+--    callback = function()
+--       if not vim.fn.expand("%:p"):match ".git" and vim.fn.line "'\"" > 1 and vim.fn.line "'\"" <= vim.fn.line "$" then
+--          vim.cmd "normal! g'\""
+--          vim.cmd "normal zz"
+--       end
+--    end,
+-- })
+
 -- File extension specific tabbing
-vim.cmd [[ autocmd Filetype go setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4 ]]
+-- autocmd("Filetype", {
+--    pattern = "python",
+--    callback = function()
+--       vim.opt_local.expandtab = true
+--       vim.opt_local.tabstop = 4
+--       vim.opt_local.shiftwidth = 4
+--       vim.opt_local.softtabstop = 4
+--    end,
+-- })
+
+-- Highlight yanked text
+-- autocmd("TextYankPost", {
+--    callback = function()
+--       vim.highlight.on_yank { higroup = "Visual", timeout = 200 }
+--    end,
+-- })
+
+-- Enable spellchecking in markdown, text and gitcommit files
+-- autocmd("FileType", {
+--    pattern = { "gitcommit", "markdown", "text" },
+--    callback = function()
+--       vim.opt_local.spell = true
+--    end,
+-- })

@@ -27,18 +27,22 @@ if not present then
    end
 end
 
-packer.init {
+local options = {
    display = {
       open_fn = function()
-         return require("packer.util").float { border = "single" }
+         return require("packer.util").float { border = "double" }
       end,
-      prompt_border = "single",
    },
    git = {
       clone_timeout = 6000, -- seconds
    },
    auto_clean = true,
    compile_on_sync = true,
+   snapshot = nil,
 }
+
+options = nvchad.load_override(options, "wbthomason/packer.nvim")
+
+packer.init(options)
 
 return packer
