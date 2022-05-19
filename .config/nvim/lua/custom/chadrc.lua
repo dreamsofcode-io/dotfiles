@@ -1,3 +1,5 @@
+local exists, cmp = pcall(require, "cmp")
+
 local M = {}
 
 M.plugins = {
@@ -15,6 +17,9 @@ M.plugins = {
       open_on_tab = true,
       open_on_setup = true,
       open_on_setup_file = true,
+    },
+    ["hrsh7th/nvim-cmp"] = {
+      preselect = cmp.PreselectMode.None,
     }
   }
 }

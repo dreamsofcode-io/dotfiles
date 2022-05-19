@@ -47,8 +47,6 @@ local options = {
       dotfiles = false,
       exclude = { "custom" },
    },
-   open_on_setup = true,
-   open_on_setup_file = true,
    disable_netrw = true,
    hijack_netrw = true,
    ignore_ft_on_setup = { "dashboard" },

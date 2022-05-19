@@ -8,6 +8,16 @@ local M = {}
 
 require("plugins.configs.others").lsp_handlers()
 
+-- Borders for LspInfo winodw
+local win = require "lspconfig.ui.windows"
+local _default_opts = win.default_opts
+
+win.default_opts = function(options)
+   local opts = _default_opts(options)
+   opts.border = "double"
+   return opts
+end
+
 function M.on_attach(client, _)
    client.resolved_capabilities.document_formatting = false
    client.resolved_capabilities.document_range_formatting = false
@@ -18,7 +28,7 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem = {
    documentationFormat = { "markdown", "plaintext" },
    snippetSupport = true,
-   preselectSupport = true,
+   preselectSupport = false,
    insertReplaceSupport = true,
    labelDetailsSupport = true,
    deprecatedSupport = true,

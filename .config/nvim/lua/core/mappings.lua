@@ -1,5 +1,9 @@
 -- n, v, i are mode names
 
+local function termcodes(str)
+   return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
 local M = {}
 
 M.general = {
@@ -11,19 +15,19 @@ M.general = {
       ["<C-e>"] = { "<End>", "壟 end of line" },
 
       -- navigate within insert mode
-      ["<C-h>"] = { "<Left>", "  move left" },
-      ["<C-l>"] = { "<Right>", " move right" },
-      ["<C-j>"] = { "<Down>", " move down" },
-      ["<C-k>"] = { "<Up>", " move up" },
+      --["<C-h>"] = { "<Left>", "  move left" },
+      --["<C-l>"] = { "<Right>", " move right" },
+      --["<C-j>"] = { "<Down>", " move down" },
+      --["<C-k>"] = { "<Up>", " move up" },
    },
 
    n = {
 
       -- switch between windows
-      ["<C-h>"] = { "<C-w>h", " window left" },
-      ["<C-l>"] = { "<C-w>l", " window right" },
-      ["<C-j>"] = { "<C-w>j", " window down" },
-      ["<C-k>"] = { "<C-w>k", " window up" },
+      --["<C-h>"] = { "<C-w>h", " window left" },
+      --["<C-l>"] = { "<C-w>l", " window right" },
+      --["<C-j>"] = { "<C-w>j", " window down" },
+      --["<C-k>"] = { "<C-w>k", " window up" },
 
       -- save
       ["<C-s>"] = { "<cmd> w <CR>", "﬚  save file" },
@@ -45,6 +49,10 @@ M.general = {
 
          "   toggle theme",
       },
+   },
+
+   t = {
+      ["jk"] = { termcodes "<C-\\><C-N>", "   escape terminal mode" },
    },
 }
 
@@ -72,12 +80,18 @@ M.comment = {
 
    -- toggle comment in both modes
    n = {
-      ["<leader>/"] = { "<cmd> lua require('Comment.api').toggle_current_linewise()<CR>", "蘒  toggle comment" },
+      ["<leader>/"] = {
+         function()
+            require("Comment.api").toggle_current_linewise()
+         end,
+
+         "蘒  toggle comment",
+      },
    },
 
    v = {
       ["<leader>/"] = {
-         "<cmd> lua require('Comment.api').toggle_current_linewise_op(vim.fn.visualmode())<CR>",
+         "<ESC><cmd>lua require('Comment.api').toggle_linewise_op(vim.fn.visualmode())<CR>",
          "蘒  toggle comment",
       },
    },
@@ -243,9 +257,32 @@ M.telescope = {
 }
 
 M.nvterm = {
+   t = {
+      -- toggle in terminal mode
+      ["<A-i>"] = {
+         function()
+            require("nvterm.terminal").toggle "float"
+         end,
+         "   toggle floating term",
+      },
+
+      ["<A-h>"] = {
+         function()
+            require("nvterm.terminal").toggle "horizontal"
+         end,
+         "   toggle horizontal term",
+      },
+
+      ["<A-v>"] = {
+         function()
+            require("nvterm.terminal").toggle "vertical"
+         end,
+         "   toggle vertical term",
+      },
+   },
 
    n = {
-      -- toggle
+      -- toggle in normal mode
       ["<A-i>"] = {
          function()
             require("nvterm.terminal").toggle "float"
@@ -289,16 +326,18 @@ M.whichkey = {
    n = {
       ["<leader>wK"] = {
          function()
-            vim.cmd("WhichKey")
-         end, "   which-key all keymaps",
+            vim.cmd "WhichKey"
+         end,
+         "   which-key all keymaps",
       },
       ["<leader>wk"] = {
          function()
-            local input = vim.fn.input("WhichKey: ")
+            local input = vim.fn.input "WhichKey: "
             vim.cmd("WhichKey " .. input)
-         end, "   which-key query lookup",
+         end,
+         "   which-key query lookup",
       },
-   }
+   },
 }
 
 return M
