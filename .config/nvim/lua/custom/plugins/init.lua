@@ -6,4 +6,8 @@ return {
       require "plugins.configs.nvimtree"
     end,
   },
+  ["aklt/plantuml-syntax"] = {},
+  ["tyru/open-browser.vim"] = {},
+  ["weirongxu/plantuml-previewer.vim"] = {},
+  ["github/copilot.vim"] = {},
 }

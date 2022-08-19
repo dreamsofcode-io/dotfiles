@@ -13,9 +13,9 @@ local options = {
 
    ui = {
       icons = {
-         server_installed = "",
-         server_pending = "",
-         server_uninstalled = "ﮊ",
+         server_installed = " ",
+         server_pending = " ",
+         server_uninstalled = " ﮊ",
       },
       keymaps = {
          toggle_server_expand = "<CR>",
@@ -31,6 +31,6 @@ local options = {
    max_concurrent_installers = 20,
 }
 
-options = nvchad.load_override(options, "williamboman/nvim-lsp-installer")
+options = require("core.utils").load_override(options, "williamboman/nvim-lsp-installer")
 
 lsp_installer.setup(options)

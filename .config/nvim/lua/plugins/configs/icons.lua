@@ -6,6 +6,11 @@ end
 
 local options = {
    override = {
+      default_icon = {
+         icon = "",
+         name = "Default",
+      },
+
       c = {
          icon = "",
          name = "c",
@@ -118,6 +123,6 @@ local options = {
 }
 
 -- check for any override
-options = nvchad.load_override(options, "kyazdani42/nvim-web-devicons")
+options = require("core.utils").load_override(options, "kyazdani42/nvim-web-devicons")
 
 devicons.setup(options)

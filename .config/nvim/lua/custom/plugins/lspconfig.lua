@@ -49,6 +49,29 @@ M.setup_lsp = function(attach, capabilities)
     },
   }
 
+  lspconfig.rust_analyzer.setup({
+    filetypes = {"rust"},
+    root_dir = util.root_pattern("Cargo.toml"),
+    settings = {
+        ["rust-analyzer"] = {
+            imports = {
+                granularity = {
+                    group = "module",
+                },
+                prefix = "self",
+            },
+            cargo = {
+                buildScripts = {
+                    enable = true,
+                },
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    }
+})
+
   vim.api.nvim_create_autocmd("BufWritePre", {
     pattern = { "*.go" },
     callback = function ()

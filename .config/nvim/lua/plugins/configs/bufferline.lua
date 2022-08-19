@@ -21,8 +21,8 @@ local options = {
       modified_icon = "",
       close_icon = "",
       show_close_icon = false,
-      left_trunc_marker = "",
-      right_trunc_marker = "",
+      left_trunc_marker = " ",
+      right_trunc_marker = " ",
       max_name_length = 14,
       max_prefix_length = 13,
       tab_size = 20,
@@ -65,6 +65,6 @@ local options = {
 }
 
 -- check for any override
-options = nvchad.load_override(options, "akinsho/bufferline.nvim")
+options = require("core.utils").load_override(options, "akinsho/bufferline.nvim")
 
 bufferline.setup(options)

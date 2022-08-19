@@ -1,13 +1,17 @@
-_G.nvchad = {}
+local M = {}
+local api = vim.api
+local fn = vim.fn
 
-nvchad.close_buffer = function(force)
+local merge_tb = vim.tbl_deep_extend
+
+M.close_buffer = function(force)
    if vim.bo.buftype == "terminal" then
-      vim.api.nvim_win_hide(0)
+      api.nvim_win_hide(0)
       return
    end
 
-   local fileExists = vim.fn.filereadable(vim.fn.expand "%p")
-   local modified = vim.api.nvim_buf_get_option(vim.fn.bufnr(), "modified")
+   local fileExists = fn.filereadable(fn.expand "%p")
+   local modified = api.nvim_buf_get_option(fn.bufnr(), "modified")
 
    -- if file doesnt exist & its modified
    if fileExists == 0 and modified then
@@ -18,134 +22,108 @@ nvchad.close_buffer = function(force)
    force = force or not vim.bo.buflisted or vim.bo.buftype == "nofile"
 
    -- if not force, change to prev buf and then close current
-   local close_cmd = force and ":bd!" or ":bp | bd" .. vim.fn.bufnr()
+   local close_cmd = force and ":bd!" or ":bp | bd" .. fn.bufnr()
    vim.cmd(close_cmd)
 end
 
-nvchad.load_config = function()
-   local conf = require "core.default_config"
-   local ignore_modes = { "mode_opts" }
+M.load_config = function()
+   local config = require "core.default_config"
+   local chadrc_exists, chadrc = pcall(require, "custom.chadrc")
 
-   -- attempt to load and merge a user config
-   local chadrc_exists = vim.fn.filereadable(vim.fn.stdpath "config" .. "/lua/custom/chadrc.lua") == 1
    if chadrc_exists then
       -- merge user config if it exists and is a table; otherwise display an error
-      local user_config = require "custom.chadrc"
-      if type(user_config) == "table" then
-         conf.mappings = conf.mappings and nvchad.prune_key_map(conf.mappings, user_config.mappings, ignore_modes) or {}
-         user_config.mappings = user_config.mappings and nvchad.prune_key_map(user_config.mappings, "rm_disabled", ignore_modes) or {}
-         conf = vim.tbl_deep_extend("force", conf, user_config)
+      if type(chadrc) == "table" then
+         M.remove_default_keys()
+         config = merge_tb("force", config, chadrc)
       else
-         error "User config (chadrc.lua) *must* return a table!"
+         error "chadrc must return a table!"
       end
    end
 
-   return conf
+   config.mappings.disabled = nil
+   return config
 end
 
--- reduces a given keymap to a table of modes each containing a list of key maps
-nvchad.reduce_key_map = function(key_map, ignore_modes)
-   local prune_keys = {}
-   for _, modes in pairs(key_map) do
-      for mode, mappings in pairs(modes) do
-         if not vim.tbl_contains(ignore_modes, mode) then
-            prune_keys[mode] = prune_keys[mode] and prune_keys[mode] or {}
-            prune_keys[mode] = vim.list_extend(prune_keys[mode], vim.tbl_keys(mappings))
+M.remove_default_keys = function()
+   local chadrc = require "custom.chadrc"
+   local user_mappings = chadrc.mappings or {}
+   local user_keys = {}
+   local user_sections = vim.tbl_keys(user_mappings)
+
+   -- push user_map keys in user_keys table
+   for _, section in ipairs(user_sections) do
+      user_keys = vim.tbl_deep_extend("force", user_keys, user_mappings[section])
+   end
+
+   local function disable_key(mode, keybind, mode_mapping)
+      local keys_in_mode = vim.tbl_keys(user_keys[mode] or {})
+
+      if vim.tbl_contains(keys_in_mode, keybind) then
+         mode_mapping[keybind] = nil
+      end
+   end
+
+   local default_mappings = require("core.default_config").mappings
+
+   -- remove user_maps from default mapping table
+   for _, section_mappings in pairs(default_mappings) do
+      for mode, mode_mapping in pairs(section_mappings) do
+         for keybind, _ in pairs(mode_mapping) do
+            disable_key(mode, keybind, mode_mapping)
          end
       end
    end
-   return prune_keys
 end
 
--- remove disabled mappings from a given key map
-nvchad.remove_disabled_mappings = function(key_map)
-   local clean_map = {}
-   if key_map == nil or key_map == "" then
-      return key_map
-   end
-   if type(key_map) == "table" then
-      for k, v in pairs(key_map) do
-         if v ~= nil and v ~= "" then clean_map[k] = v end
+M.load_mappings = function(mappings, mapping_opt)
+   -- set mapping function with/without whichkey
+   local map_func
+   local whichkey_exists, wk = pcall(require, "which-key")
+
+   if whichkey_exists then
+      map_func = function(keybind, mapping_info, opts)
+         wk.register({ [keybind] = mapping_info }, opts)
+      end
+   else
+      map_func = function(keybind, mapping_info, opts)
+         local mode = opts.mode
+         opts.mode = nil
+         vim.keymap.set(mode, keybind, mapping_info[1], opts)
       end
    end
-   return clean_map
-end
 
--- prune keys from a key map table by matching against another key map table
-nvchad.prune_key_map = function(key_map, prune_map, ignore_modes)
-   if not prune_map then return key_map end
-   if not key_map then return prune_map end
-   local prune_keys = type(prune_map) == "table" and nvchad.reduce_key_map(prune_map, ignore_modes)
-       or { n = {}, v = {}, i = {}, t = {} }
+   mappings = mappings or vim.deepcopy(M.load_config().mappings)
+   mappings.lspconfig = nil
 
-   for ext, modes in pairs(key_map) do
-      for mode, mappings in pairs(modes) do
-         if not vim.tbl_contains(ignore_modes, mode) then
-            -- filter mappings table so that only keys that are not in user_mappings are left
-            for b, _ in pairs(mappings) do
-               if prune_keys[mode] and vim.tbl_contains(prune_keys[mode], b) then
-                  key_map[ext][mode][b] = nil
-               end
+   for _, section_mappings in pairs(mappings) do
+      -- skip mapping this as its mapppings are loaded in lspconfig
+      for mode, mode_mappings in pairs(section_mappings) do
+         for keybind, mapping_info in pairs(mode_mappings) do
+            -- merge default + user opts
+
+            local default_opts = merge_tb("force", { mode = mode }, mapping_opt or {})
+            local opts = merge_tb("force", default_opts, mapping_info.opts or {})
+
+            if mapping_info.opts then
+               mapping_info.opts = nil
             end
-         end
-         key_map[ext][mode] = nvchad.remove_disabled_mappings(mappings)
-      end
-   end
 
-   return key_map
-end
-
-nvchad.map = function(mode, keys, command, opt)
-   local options = { silent = true }
-
-   if opt then
-      options = vim.tbl_extend("force", options, opt)
-   end
-
-   if type(keys) == "table" then
-      for _, keymap in ipairs(keys) do
-         nvchad.map(mode, keymap, command, opt)
-      end
-      return
-   end
-
-   vim.keymap.set(mode, keys, command, opt)
-end
-
--- For those who disabled whichkey
-nvchad.no_WhichKey_map = function()
-   local mappings = nvchad.load_config().mappings
-   local ignore_modes = { "mode_opts" }
-
-   for _, value in pairs(mappings) do
-      for mode, keymap in pairs(value) do
-         if not vim.tbl_contains(ignore_modes, mode) then
-            for keybind, cmd in pairs(keymap) do
-               -- disabled keys will not have cmd set
-               if cmd ~= "" and cmd[1] then
-                  nvchad.map(mode, keybind, cmd[1])
-               end
-            end
+            map_func(keybind, mapping_info, opts)
          end
       end
    end
-
-   require("plugins.configs.others").misc_mappings()
 end
 
 -- load plugin after entering vim ui
-nvchad.packer_lazy_load = function(plugin, timer)
-   if plugin then
-      timer = timer or 0
-      vim.defer_fn(function()
-         require("packer").loader(plugin)
-      end, timer)
-   end
+M.packer_lazy_load = function(plugin)
+   vim.defer_fn(function()
+      require("packer").loader(plugin)
+   end, 0)
 end
 
 -- remove plugins defined in chadrc
-nvchad.remove_default_plugins = function(plugins)
-   local removals = nvchad.load_config().plugins.remove or {}
+M.remove_default_plugins = function(plugins)
+   local removals = M.load_config().plugins.remove or {}
 
    if not vim.tbl_isempty(removals) then
       for _, plugin in pairs(removals) do
@@ -157,11 +135,11 @@ nvchad.remove_default_plugins = function(plugins)
 end
 
 -- merge default/user plugin tables
-nvchad.plugin_list = function(default_plugins)
-   local user_plugins = nvchad.load_config().plugins.user
+M.merge_plugins = function(default_plugins)
+   local user_plugins = M.load_config().plugins.user
 
    -- merge default + user plugin table
-   default_plugins = vim.tbl_deep_extend("force", default_plugins, user_plugins)
+   default_plugins = merge_tb("force", default_plugins, user_plugins)
 
    local final_table = {}
 
@@ -174,14 +152,16 @@ nvchad.plugin_list = function(default_plugins)
    return final_table
 end
 
-nvchad.load_override = function(default_table, plugin_name)
-   local user_table = nvchad.load_config().plugins.override[plugin_name]
+M.load_override = function(default_table, plugin_name)
+   local user_table = M.load_config().plugins.override[plugin_name]
 
    if type(user_table) == "table" then
-      default_table = vim.tbl_deep_extend("force", default_table, user_table)
+      default_table = merge_tb("force", default_table, user_table)
    else
       default_table = default_table
    end
 
    return default_table
 end
+
+return M
