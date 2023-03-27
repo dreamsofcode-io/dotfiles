@@ -1,0 +1,183 @@
+#+title: zshrc configuration
+#+PROPERTY: header-args:sh :tangle ./.zshrc
+
+* Intro
+
+This is my zsh configuration, written as an Org mode document. This file generates a .zshrc file,
+which is loaded by zsh.
+
+* Yubikey
+
+** GPG_TTY
+
+The following code block sets up the GPG_TTY for my Yubikey. First of we check to see if $TTY is set. If it's
+empty, we use the tty command, which is slower than using the env var.
+
+#+begin_src sh
+  # Set the GPG_TTY to be the same as the TTY, either via the env var
+  # or via the tty command.
+  if [ -n "$TTY" ]; then
+    export GPG_TTY=$(tty)
+  else
+    export GPG_TTY="$TTY"
+  fi
+#+end_src
+
+** SSH Auth Socket
+
+Next up, we want to set the SSH_AUTH_SOCK env var as per the guide at https://github.com/drduh/YubiKey-Guide#replace-agents.
+
+#+begin_src sh
+  # SSH_AUTH_SOCK set to GPG to enable using gpgagent as the ssh agent.
+  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+  gpgconf --launch gpg-agent
+#+end_src
+
+* Powerlevel10k
+
+#+begin_src sh
+  # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+  # Initialization code that may require console input (password prompts, [y/n]
+  # confirmations, etc.) must go above this block; everything else may go below.
+  if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  fi
+#+end_src
+
+#+begin_src sh
+  export PATH="/usr/local/bin:/usr/bin"
+#+end_src
+
+
+* ZShell Plugin Manager
+
+Simply set the one you want to have begin_src of sh
+
+* ZGen
+
+#+begin_src shell
+  source "${HOME}/.zgen/zgen.zsh"
+  source "${HOME}/.config/zgen.zsh"
+#+end_src
+
+* Zinit
+
+#+begin_src sh
+  autoload -Uz compinit && compinit
+
+  ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+  # Download Zinit, if it's not there yet
+  if [ ! -d "$ZINIT_HOME" ]; then
+     mkdir -p "$(dirname $ZINIT_HOME)"
+     git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+  fi
+
+  source "${ZINIT_HOME}/zinit.zsh"
+
+  zinit light ohmyzsh/ohmyzsh
+  zinit ice depth=1; zinit light romkatv/powerlevel10k
+  zinit snippet OMZP::git
+  zinit snippet OMZP::sudo
+  zinit snippet OMZP::aws
+  zinit snippet OMZP::kubectl
+  zinit snippet OMZP::kubectx
+  zinit snippet OMZP::rust
+  zinit snippet OMZP::command-not-found
+
+  zinit light zsh-users/zsh-completions
+  zinit light zsh-users/zsh-autosuggestions
+  zinit light zsh-users/zsh-syntax-highlighting
+#+end_src
+
+* Znap
+
+#+begin_src shell
+   # Download Znap, if it's not there yet.
+   [[ -f ~/.config/zsh-snap/znap.zsh ]] ||
+       git clone --depth 1 -- \
+           https://github.com/marlonrichert/zsh-snap.git ~/.config/zsh-snap
+
+   source ~/.config/zsh-snap/znap.zsh  # Start Znap
+
+   znap fpath _kubectl 'kubectl completion  zsh'
+
+   znap source romkatv/powerlevel10k
+   znap source zsh-users/zsh-completions
+   znap source zsh-users/zsh-autosuggestions
+   znap source zsh-users/zsh-syntax-highlighting
+   znap install ohmyzsh/ohmyzsh
+   znap source ohmyzsh/ohmyzsh plugins/git
+   znap source ohmyzsh/ohmyzsh plugins/sudo
+   znap source ohmyzsh/ohmyzsh plugins/kubectx
+   znap source ohmyzsh/ohmyzsh plugins/command-not-found
+#+end_src
+
+#+begin_src sh
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+
+  source $HOME/.profile
+  source $HOME/.config/tmuxinator/tmuxinator.zsh
+
+  if [ Darwin = `uname` ]; then
+    source $HOME/.profile-macOS
+  elif [ Linux = `uname` ]; then
+    source $HOME/.profile-linux
+  fi
+
+  setopt auto_cd
+
+  #export PATH="/usr/local/opt/curl/bin:$PATH"
+  export PATH="$PATH:/home/elliott/Library/flutter/bin"
+
+  alias sudo='sudo '
+  export LD_LIBRARY_PATH=/usr/local/lib
+#+end_src
+
+* Completions
+
+#+begin_src sh
+  # Completions
+
+  source <(doctl completion zsh)
+
+  source <(kubectl completion zsh)
+#+end_src
+
+* P10k customization
+
+#+begin_src sh
+  # P10k customizations
+  # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+  [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+#+end_src
+
+* Custom config
+
+#+begin_src sh
+    # Fix for password store
+    export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
+
+    export NVM_DIR="$HOME/.nvm"                            # You can change this if you want.
+    export NVM_SOURCE="/usr/share/nvm"                     # The AUR package installs it to here.
+    [ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"  # Load N
+
+    bindkey "^P" up-line-or-beginning-search
+    bindkey "^N" down-line-or-beginning-search
+
+    [ -s "/home/elliott/.svm/svm.sh" ] && source "/home/elliott/.svm/svm.sh"
+#+end_src
+
+* Capslock
+Given that the capslock key should be removed entirely (using caps2esc-no-caps from the AUR). Then we need a way to be able to toggle the capslock key (in the event it get's stuck on or something).
+
+#+begin_src sh
+  # Capslock command
+  alias capslock="sudo killall -USR1 caps2esc"
+#+end_src
+
+* Starship
+
+#+begin_src shell
+  eval "$(starship init zsh)"
+#+end_src

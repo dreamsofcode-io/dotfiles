@@ -1,0 +1,66 @@
+#+title: Fix Arch
+#+description: Outlines steps to fix arch linux when it goes wrong.
+
+* Arch Bootable
+Create a bootable arch linux USB and boot into it
+
+* Connecting to WiFi (optional)
+On some devices, connecting to WiFi is necessary.
+
+#+begin_src sh
+$ iwctl
+[iwctl] station wlan0 scan
+[iwctl] station wlan0 connect <ssid>
+#+end_src
+
+* Enable SSH for easier access (optional)
+Enabling ssh will allow for easier resolution due to being able to have a GUI at the same time. However, this is not always possible.
+
+#+begin_src sh
+$ pacman -Sy
+$ pacman -S openssh
+$ systemctl start sshd
+#+end_src
+
+* Set the root password
+#+begin_src sh
+$ passwd
+#+end_src
+
+* SSH in from another computer (to be able to read this guide)
+
+* Mount the existing filesystem
+
+** Check the block devices
+#+begin_src sh
+$ lsblk
+#+end_src
+
+** Decrypt the luks lvm partition
+#+begin_src sh
+# ThreadRipper
+$ cryptsetup open /dev/nvme0n1p3 luks_lvm
+#+end_src
+
+** Decrypt the home drive
+#+begin_src sh
+# ThreadRipper
+$ cryptsetup open /dev/sda1 arch-home
+#+end_src
+
+** Mount decrypted partitions
+#+begin_src sh
+$ swapon /dev/mapper/arch-swap
+$ swapon -a ; swapon -s
+$ mount /dev/mapper/arch-root /mnt
+$ mount /dev/nvme0n1p2 /mnt/boot
+$ mount /dev/mapper/arch-home /mnt/home
+$ mount /dev/nvme0n1p1 /mnt/boot/efi
+#+end_src
+
+* Switch to filesystem
+
+** Chroot
+#+begin_src sh
+$ arch-chroot /mnt /bin/bash
+#+end_src

@@ -1,0 +1,1384 @@
+#+title: Elliott Minns' emacs configuration
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el
+
+* Welcome!
+This is my emacs configuration, written as an Org Mode document. This file generates an init.el which is loaded by Emacs at startup.
+
+The following variables allow for tweaking some of the configuration pieces, depending on the system.
+
+#+begin_src emacs-lisp
+
+;; Variable for font sizing
+(defvar kraken/default-font-size 100)
+(defvar kraken/default-variable-font-size 120)
+
+;; Make frame transparency overridable
+(defvar kraken/frame-transparency '(90 . 90))
+
+#+end_src
+
+* Package Management
+straight.el for reproducible package management
+
+#+begin_src emacs-lisp
+
+;; Bootstrap straight.el
+(setq straight-use-package-by-default t
+  straight-build-dir (format "build-%s" emacs-version))
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+      (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+        'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+#+end_src
+
+use-package to automatically manage package installation
+
+#+begin_src emacs-lisp
+
+(straight-use-package 'use-package)
+
+#+end_src
+
+* Fix org mode bug
+At some point, org mode conflicts with straight when trying to load later on. In order to fix this
+we add org mode sooner, rather than later.
+
+#+begin_src emacs-lisp
+
+  (straight-use-package 'org)
+
+#+end_src
+
+* Keep .emacs.d Clean
+
+I don't want a bunch of transient files showing up as untracked in the Git repo so I move them all to another location. This is currently disabled until I'm able to make it work with straight.el
+
+#+begin_src emacs-lisp :tangle no
+
+  ;; Change the user-emacs-directory to keep unwanted things out of ~/.emacs.d
+  (setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
+       url-history-file (expand-file-name "url/history" user-emacs-directory))
+
+  ;; Use no-littering to automatically set common paths to the new user-emacs-directory
+   (use-package no-littering)
+
+  ;; Keep customization settings in a temporary file (thanks Ambrevar!)
+  (setq custom-file
+        (if (boundp 'server-socket-dir)
+            (expand-file-name "custom.el" server-socket-dir)
+          (expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
+  (load custom-file t)
+
+#+end_src
+
+* Update Load Path
+#+begin_src emacs-lisp
+
+(push "~/.emacs.d/lisp" load-path)
+
+#+end_src
+
+* Server Mode
+
+Start the Emacs server from this instance so that all =emacsclient= calls are routed here. 
+
+#+begin_src emacs-lisp
+
+(server-start)
+
+#+end_src
+
+* Desktop Environment
+
+Load up the desktop environment if on a machine that supports it and the =--use-exwm= argument was passed to Emacs on startup.  Desktop environment and window management code can be found in Desktop.org.
+
+#+begin_src emacs-lisp
+
+  (setq kraken/exwm-enabled (and (eq window-system 'x)
+                             (seq-contains command-line-args "--use-exwm")))
+
+  (when kraken/exwm-enabled
+    (require 'kraken-desktop))
+
+#+end_src
+
+* Basic UI Configuration
+
+#+begin_src emacs-lisp
+
+(setq inhibit-startup-message t)
+
+(scroll-bar-mode -1) ; Disable visible scrollbar
+(tool-bar-mode -1)   ; Disable the toolbar
+(tooltip-mode -1)    ; Disable tooltips
+(set-fringe-mode 10) ; Give some breating room
+
+(menu-bar-mode -1)   ; Diable the menu bar
+
+(toggle-frame-maximized) ; Start maximized
+  
+#+end_src
+
+* UI Configuration
+
+#+begin_src emacs-lisp
+
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((emacs-lisp . t)
+    (python . t)))
+	
+(setq org-confirm-babel-evaluate nil)
+
+#+end_src
+
+
+* Keyboard Bindings
+
+** ESC Cancels All
+
+#+begin_src emacs-lisp
+
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+#+end_src
+
+** Rebind C-u
+
+Since I let =evil-mode= take over =C-u= for buffer scrolling, I need to re-bind the =universal-argument= command to another key sequence.  I'm choosing =C-M-u= for this purpose.
+
+#+begin_src emacs-lisp
+
+  (global-set-key (kbd "C-M-u") 'universal-argument)
+
+#+end_src
+
+** IBuffer
+
+#+begin_src emacs-lisp
+
+(global-set-key (kbd "C-x C-b") #'ibuffer)
+
+#+end_src
+
+** Evil Mode
+
+#+begin_src emacs-lisp
+
+  (defun kraken/evil-hook ()
+    (dolist (mode '(custom-mode
+                    eshell-mode
+                    git-rebase-mode
+                    erc-mode
+                    circe-server-mode
+                    circe-chat-mode
+                    circe-query-mode
+                    sauron-mode
+                    term-mode))
+      (add-to-list 'evil-emacs-state-modes mode)))
+
+  (defun kraken/dont-arrow-me-bro ()
+    (interactive)
+    (message "Arrow keys are bad, you know?"))
+
+  (use-package undo-tree
+    :init
+    (global-undo-tree-mode 1))
+
+  (use-package evil
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    (setq evil-respect-visual-line-mode t)
+    (setq evil-undo-system 'undo-tree)
+    :config
+    (add-hook 'evil-mode-hook 'kraken/evil-hook)
+    (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+    ;; Disable arrow keys in normal and visual modes
+    (define-key evil-normal-state-map (kbd "<left>") 'kraken/dont-arrow-me-bro)
+    (define-key evil-normal-state-map (kbd "<right>") 'kraken/dont-arrow-me-bro)
+    (define-key evil-normal-state-map (kbd "<down>") 'kraken/dont-arrow-me-bro)
+    (define-key evil-normal-state-map (kbd "<up>") 'kraken/dont-arrow-me-bro)
+    (evil-global-set-key 'motion (kbd "<left>") 'kraken/dont-arrow-me-bro)
+    (evil-global-set-key 'motion (kbd "<right>") 'kraken/dont-arrow-me-bro)
+    (evil-global-set-key 'motion (kbd "<down>") 'kraken/dont-arrow-me-bro)
+    (evil-global-set-key 'motion (kbd "<up>") 'kraken/dont-arrow-me-bro)
+
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
+
+  (use-package evil-collection
+    :after evil
+    :custom
+    (evil-collection-outline-bind-tab-p nil)
+    :config
+    (evil-collection-init))
+
+#+end_src
+
+** Simplify Leader Bindings (general.el)
+
+[[https://github.com/noctuid/general.el][general.el]] is a fantastic library for defining prefixed keybindings, especially in conjunction with Evil modes.
+
+#+begin_src emacs-lisp
+
+  (use-package general
+    :config
+    (general-evil-setup t)
+
+    (general-create-definer kraken/leader-key-def
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+
+    (general-create-definer kraken/ctrl-c-keys
+      :prefix "C-c"))
+
+#+end_src
+
+* General Configuration
+
+** User Interface
+
+*** Blackout
+
+#+begin_src emacs-lisp
+
+(use-package blackout
+  :straight (:host github :repo "raxod502/blackout"))
+
+#+end_src
+
+*** Which Key
+
+#+begin_src emacs-lisp
+
+(use-package which-key
+  :blackout t
+  :hook (after-init . which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.5))
+
+#+end_src
+
+
+** Theme
+
+Catppuccin is my current favorite theme
+
+#+begin_src emacs-lisp
+(use-package catppuccin-theme
+  :init (load-theme 'catppuccin t))
+#+end_src
+
+** Font
+
+#+begin_src emacs-lisp 
+
+(set-face-attribute 'default nil
+  :font "JetBrains Mono Nerd Font" 
+  :height kraken/default-font-size 
+  :weight 'medium)
+
+(set-face-attribute 'fixed-pitch nil 
+  :font "JetBrains Mono Nerd Font" 
+  :height kraken/default-font-size)
+
+(set-face-attribute 'variable-pitch nil 
+  :font "Cantarell"
+  :height kraken/default-variable-font-size
+  :weight 'regular)
+
+#+end_src
+
+#+RESULTS:
+
+** Mode Line
+
+#+begin_src emacs-lisp
+
+(use-package all-the-icons)
+
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
+
+#+end_src
+
+** Notifications
+
+[[https://github.com/jwiegley/alert][alert]] is a great library for showing notifications from other packages in a variety of ways.  For now I just use it to surface desktop notifications from package code.
+
+#+begin_src emacs-lisp
+
+  (use-package alert
+    :commands alert
+    :config
+    (setq alert-default-style 'notifications))
+
+#+end_src
+
+** UI Toggles
+
+#+begin_src emacs-lisp
+
+(kraken/leader-key-def
+  "t"  '(:ignore t :which-key "toggles")
+  "tt" '(load-theme :which-key "choose theme")
+  "tw" 'whitespace-mode
+  "tm" 'toggle-frame-maximized
+  "tM" 'toggle-frame-fullscreen)
+
+#+end_src
+
+** Pinentry
+
+Emacs can be prompted for the PIN of GPG private keys, we just need to set
+=epa-pinentry-mode= to accomplish that:
+
+#+begin_src emacs-lisp
+
+  (setq epa-pinentry-mode 'loopback)
+  (use-package pinentry
+    :init (pinentry-start))
+
+#+end_src
+
+* Editing Configuration
+
+** Tab Widths
+
+Default to an indentation size of 2 spaces since it's the norm for pretty much every language I use.
+
+#+begin_src emacs-lisp
+
+  (setq-default tab-width 2)
+  (setq-default evil-shift-width tab-width)
+
+#+end_src
+
+** Use spaces instead of tabs for indentation
+
+#+begin_src emacs-lisp
+
+  (setq-default indent-tabs-mode nil)
+
+#+end_src
+
+** Commenting Lines
+
+#+begin_src emacs-lisp
+
+  (use-package evil-nerd-commenter
+    :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+
+#+end_src
+
+** Automatically clean whitespace
+
+#+begin_src emacs-lisp
+
+  (use-package ws-butler
+    :hook ((text-mode . ws-butler-mode)
+           (prog-mode . ws-butler-mode)))
+
+#+end_src
+
+** Use Parinfer for Lispy languages
+
+#+begin_src emacs-lisp
+
+  (use-package parinfer
+    :hook ((clojure-mode . parinfer-mode)
+           (emacs-lisp-mode . parinfer-mode)
+           (common-lisp-mode . parinfer-mode)
+           (scheme-mode . parinfer-mode)
+           (lisp-mode . parinfer-mode))
+    :config
+    (setq parinfer-extensions
+        '(defaults       ; should be included.
+          pretty-parens  ; different paren styles for different modes.
+          evil           ; If you use Evil.
+          smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
+          smart-yank)))  ; Yank behavior depend on mode.
+
+  (kraken/leader-key-def
+    "tp" 'parinfer-toggle-mode)
+
+#+end_src
+
+** Origami.el for Folding
+
+#+begin_src emacs-lisp
+
+(use-package origami
+  :hook (yaml-mode . origami-mode))
+
+#+end_src
+
+* Buffer Management
+
+* Window Management
+
+* Expand Region
+
+* Credential Management
+
+* File Browsing
+
+* Org Mode
+
+** Org Configuration
+
+Set up Org Mode with a baseline configuration.  The following sections will add more things to it.
+
+#+begin_src emacs-lisp
+
+    ;; TODO: Mode this to another section
+    (setq-default fill-column 80)
+
+    ;; Turn on indentation and auto-fill mode for Org files
+    (defun kraken/org-mode-setup ()
+      (org-indent-mode)
+      (variable-pitch-mode 1)
+      (auto-fill-mode 0)
+      (visual-line-mode 1)
+      (setq evil-auto-indent nil)
+      (blackout org-indent-mode))
+
+    (use-package org
+      :defer t
+      ;:hook (org-mode . kraken/org-mode-setup)
+      :config
+      (setq org-ellipsis " ▾"
+            org-hide-emphasis-markers t
+            org-src-fontify-natively t
+            org-src-tab-acts-natively t
+            org-edit-src-content-indentation 2
+            org-hide-block-startup nil
+            org-src-preserve-indentation nil
+            org-startup-folded 'content
+            org-cycle-separator-lines 2)
+
+      (setq org-modules
+        '(org-crypt
+            org-habit
+            org-bookmark
+            org-eshell
+            org-irc))
+
+      ;(setq org-refile-targets '((nil :maxlevel . 2)
+                                 ;(org-agenda-files :maxlevel . 2)))
+
+      ;(setq org-outline-path-complete-in-steps nil)
+      ;(setq org-refile-use-outline-path t)
+
+      ;(evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'org-next-visible-heading)
+      ;(evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'org-previous-visible-heading)
+
+      ;(evil-define-key '(normal insert visual) org-mode-map (kbd "M-j") 'org-metadown)
+      ;(evil-define-key '(normal insert visual) org-mode-map (kbd "M-k") 'org-metaup)
+
+      ;(org-babel-do-load-languages
+        ;'org-babel-load-languages
+        ;'((emacs-lisp . t)
+          ;(ledger . t)))
+
+      ;(push '("conf-unix" . conf-unix) org-src-lang-modes)
+
+      ;; NOTE: Subsequent sections are still part of this use-package block!
+
+#+end_src
+
+** Workflow Configuration
+
+I document and configure my org-mode workflow in a separate document: [[file:Workflow.org][Workflow.org]]
+
+#+begin_src emacs-lisp
+
+  (require 'kraken-org)
+  ;(require 'kraken-workflow)
+
+#+end_src
+
+** Automatically "Tangle" on Save
+
+Handy tip from [[https://leanpub.com/lit-config/read#leanpub-auto-configuring-emacs-and--org-mode-for-literate-programming][this book]] on literate programming.
+
+#+begin_src emacs-lisp
+
+  ;; Since we don't want to disable org-confirm-babel-evaluate all
+  ;; of the time, do it around the after-save-hook
+  (defun kraken/org-babel-tangle-dont-ask ()
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle)))
+
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'kraken/org-babel-tangle-dont-ask
+                                                'run-at-end 'only-in-org-mode)))
+
+#+end_src
+
+** Fonts and Bullets
+
+Use bullet characters instead of asterisks, plus set the header font sizes to something more palatable.  A fair amount of inspiration has been taken from [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][this blog post]].
+
+#+begin_src emacs-lisp
+
+  (use-package org-superstar
+    :after org
+    :hook (org-mode . org-superstar-mode)
+    :custom
+    (org-superstar-remove-leading-stars t)
+    (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                           '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; Increase the size of various headings
+  ;(set-face-attribute 'org-document-title nil :font "Cantarell" :weight 'bold :height 1.3)
+  ;(dolist (face '((org-level-1 . 1.2)
+  ;                (org-level-2 . 1.1)
+  ;                (org-level-3 . 1.05)
+  ;                (org-level-4 . 1.0)
+  ;                (org-level-5 . 1.1)
+  ;                (org-level-6 . 1.1)
+  ;                (org-level-7 . 1.1)
+  ;                (org-level-8 . 1.1)))
+  ;  (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+  ;; Make sure org-indent face is available
+  (require 'org-indent)
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  ;(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  ;(set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
+  ;(set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+  ;(set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  ;(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+  ;(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  ;(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  ;(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  ;(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+  ;; TODO: Others to consider
+
+  ;; '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+  ;; '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  ;; '(org-property-value ((t (:inherit fixed-pitch))) t)
+  ;; '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+  ;; '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+  ;; '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+  ;; '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+
+#+end_src
+
+*Guix Packages*
+
+#+begin_src scheme :noweb-ref packages :noweb-sep ""
+
+  "emacs-org-bullets"
+  "emacs-org-superstar"
+
+#+end_src
+
+** Block Templates
+
+These templates enable you to type things like =<el= and then hit =Tab= to expand
+the template.  More documentation can be found at the Org Mode [[https://orgmode.org/manual/Easy-templates.html][Easy Templates]]
+documentation page.
+
+#+begin_src emacs-lisp
+
+  ;; This is needed as of Org 9.2
+  (require 'org-tempo)
+
+  (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
+  (add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
+  (add-to-list 'org-structure-template-alist '("json" . "src json"))
+
+#+end_src
+
+** Pomodoro
+
+#+begin_src emacs-lisp
+
+  ;(use-package org-pomodoro
+    ;:after org
+    ;:config
+    ;(setq org-pomodoro-start-sound "~/.emacs.d/sounds/focus_bell.wav")
+    ;(setq org-pomodoro-short-break-sound "~/.emacs.d/sounds/three_beeps.wav")
+    ;(setq org-pomodoro-long-break-sound "~/.emacs.d/sounds/three_beeps.wav")
+    ;(setq org-pomodoro-finished-sound "~/.emacs.d/sounds/meditation_bell.wav")
+
+    ;(kraken/leader-key-def
+      ;"op"  '(org-pomodoro :which-key "pomodoro")))
+
+#+end_src
+
+*Guix Packages*
+
+#+begin_src scheme :noweb-ref packages :noweb-sep ""
+
+  "emacs-org-pomodoro"
+
+#+end_src
+
+** Protocol
+
+This is probably not needed if I plan to use custom functions that are invoked
+through =emacsclient.=
+
+#+begin_src emacs-lisp
+
+  (require 'org-protocol)
+
+#+end_src
+
+** Searching
+
+#+begin_src emacs-lisp
+
+  (defun kraken/search-org-files ()
+    (interactive)
+    (counsel-rg "" "~/Notes" nil "Search Notes: "))
+
+#+end_src
+
+** Bindings
+
+#+begin_src emacs-lisp
+
+  (use-package evil-org
+    :after org
+    :hook ((org-mode . evil-org-mode)
+           (org-agenda-mode . evil-org-mode)
+           (evil-org-mode . (lambda () (evil-org-set-key-theme '(navigation todo insert textobjects additional)))))
+    :config
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
+
+  (kraken/leader-key-def
+    "o"   '(:ignore t :which-key "org mode")
+
+    "oi"  '(:ignore t :which-key "insert")
+    "oil" '(org-insert-link :which-key "insert link")
+
+    "on"  '(org-toggle-narrow-to-subtree :which-key "toggle narrow")
+
+    "os"  '(kraken/counsel-rg-org-files :which-key "search notes")
+
+    "oa"  '(org-agenda :which-key "status")
+    "oc"  '(org-capture t :which-key "capture")
+    "ox"  '(org-export-dispatch t :which-key "export"))
+
+#+end_src
+
+#+begin_src scheme :noweb-ref packages :noweb-sep ""
+
+  "emacs-evil-org"
+
+#+end_src
+
+** End =use-package org-mode=
+
+#+begin_src emacs-lisp
+
+  ;; This ends the use-package org-mode block
+  )
+
+#+end_src
+
+
+* Development
+
+Configuration for various programming languages and dev tools that I use
+
+** Binding key prefix
+
+#+begin_src emacs-lisp
+
+  (kraken/leader-key-def
+    "c" '(:ignore t :which-key "code"))
+
+#+end_src
+
+** Git
+
+*** Magit 
+
+#+begin_src emacs-lisp
+
+(use-package magit
+  :bind ("C-M-;" . magit-status)
+  :commands (magit-status magit-get-current-branch)
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+(kraken/leader-key-def
+  "g"   '(:ignore t :which-key "git")
+  "gs"  'magit-status
+  "gd"  'magit-diff-unstaged
+  "gc"  'magit-branch-or-checkout
+  "gl"   '(:ignore t :which-key "log")
+  "glc" 'magit-log-current
+  "glf" 'magit-log-buffer-file
+  "gb"  'magit-branch
+  "gP"  'magit-push-current
+  "gp"  'magit-pull-branch
+  "gf"  'magit-fetch
+  "gF"  'magit-fetch-all
+  "gr"  'magit-rebase)
+
+#+end_src
+
+*** Forge
+
+#+begin_src emacs-lisp
+
+(use-package forge)
+
+#+end_src
+
+*** magit-todos
+
+This is an interesting extension to Magit that shows a TODOs section in your
+git status buffer containing all lines with TODO (or other similar words) in
+files contained within the repo.  More information at the [[https://github.com/alphapapa/magit-todos][GitHub repo]].
+
+#+begin_src emacs-lisp
+
+  (use-package magit-todos
+    :defer t)
+
+#+end_src
+
+*** Git Gutter
+
+#+begin_src emacs-lisp
+
+  (use-package git-gutter
+    :straight git-gutter-fringe
+    :blackout
+    :hook ((text-mode . git-gutter-mode)
+           (prog-mode . git-gutter-mode))
+    :config
+    (setq git-gutter:update-interval 2)
+    (require 'git-gutter-fringe)
+    (set-face-foreground 'git-gutter-fr:added "LightGreen")
+    (fringe-helper-define 'git-gutter-fr:added nil
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX")
+
+    (set-face-foreground 'git-gutter-fr:modified "LightGoldenrod")
+    (fringe-helper-define 'git-gutter-fr:modified nil
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX")
+
+    (set-face-foreground 'git-gutter-fr:deleted "LightCoral")
+    (fringe-helper-define 'git-gutter-fr:deleted nil
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX")
+
+    ;; These characters are used in terminal mode
+    (setq git-gutter:modified-sign "≡")
+    (setq git-gutter:added-sign "≡")
+    (setq git-gutter:deleted-sign "≡")
+    (set-face-foreground 'git-gutter:added "LightGreen")
+    (set-face-foreground 'git-gutter:modified "LightGoldenrod")
+    (set-face-foreground 'git-gutter:deleted "LightCoral"))
+
+#+end_src
+
+** Projectile
+
+#+begin_src emacs-lisp
+
+(use-package projectile
+  :blackout
+  :ensure t
+  :init
+  (setq projectile-completion-system 'ivy)
+  (projectile-mode +1)
+  :bind 
+  (:map projectile-mode-map ("C-c p" . projectile-command-map)))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode 1))
+
+(kraken/leader-key-def
+  "p"  '(:ignore p :which-key "projectile")
+  "pf"  'counsel-projectile-find-file
+  "ps"  'counsel-projectile-switch-project
+  "p/"  'counsel-projectile-rg
+  "pp"  'counsel-projectile
+  "pa"  'projectile-add-known-project
+  "pc"  'projectile-compile-project
+  "pd"  'projectile-dired)
+
+#+end_src
+
+* Languages
+
+** Language Server Support
+
+#+begin_src emacs-lisp
+
+  (use-package lsp-mode
+    :straight t
+    :commands lsp
+    :hook ((go-mode) . lsp)
+    :bind (:map lsp-mode-map
+           ("TAB" . completion-at-point)))
+
+  (kraken/leader-key-def
+    "l"  '(:ignore t :which-key "lsp")
+    "ld" 'xref-find-definitions
+    "lr" 'xref-find-references
+    "ln" 'lsp-ui-find-next-reference
+    "lp" 'lsp-ui-find-prev-reference
+    "ls" 'counsel-imenu
+    "le" 'lsp-ui-flycheck-list
+    "lS" 'lsp-ui-sideline-mode
+    "lX" 'lsp-execute-code-action)
+
+  (use-package lsp-ui
+    :straight t
+    :hook (lsp-mode . lsp-ui-mode)
+    :config
+    ;(setq lsp-ui-sideline-enable t)
+    ;(setq lsp-ui-sideline-show-hover nil)
+    ;(lsp-ui-doc-show))
+    )
+
+#+end_src
+
+** Go
+
+#+begin_src emacs-lisp
+
+
+      (use-package go-mode
+        :functions (go-packages-gopkgs go-update-tools)
+        :bind (:map go-mode-map
+               ("C-c R" . go-remove-unused-imports)
+               ("<f1>" . godoc-at-point))
+        :config
+        ;; Env vars
+        (with-eval-after-load 'exec-path-from-shell
+          (exec-path-from-shell-copy-envs '("GOPATH" "GO111MODULE" "GOPROXY")))
+
+        ;; Install or update tools
+        (defvar go--tools '("golang.org/x/tools/cmd/goimports"
+                            "github.com/go-delve/delve/cmd/dlv"
+                            "github.com/josharian/impl"
+                            "github.com/cweill/gotests/..."
+                            "github.com/fatih/gomodifytags"
+                            "github.com/davidrjenni/reftools/cmd/fillstruct")
+          "All necessary go tools.")
+
+        ;; Do not use the -u flag for gopls, as it will update the dependencies to incompatible versions
+        ;; https://github.com/golang/tools/blob/master/gopls/doc/user.md#installation
+        (defvar go--tools-no-update '("golang.org/x/tools/gopls@latest")
+          "All necessary go tools without update the dependencies.")
+
+        (defun go-update-tools ()
+          "Install or update go tools."
+          (interactive)
+          (unless (executable-find "go")
+            (user-error "Unable to find `go' in `exec-path'!"))
+
+          (message "Installing go tools...")
+          (let ((proc-name "go-tools")
+                (proc-buffer "*Go Tools*"))
+            (dolist (pkg go--tools-no-update)
+              (set-process-sentinel
+               (start-process proc-name proc-buffer "go" "get" "-v" pkg)
+               (lambda (proc _)
+                 (let ((status (process-exit-status proc)))
+                   (if (= 0 status)
+                       (message "Installed %s" pkg)
+                     (message "Failed to install %s: %d" pkg status))))))
+
+            (dolist (pkg go--tools)
+              (set-process-sentinel
+               (start-process proc-name proc-buffer "go" "get" "-u" "-v" pkg)
+               (lambda (proc _)
+                 (let ((status (process-exit-status proc)))
+                   (if (= 0 status)
+                       (message "Installed %s" pkg)
+                     (message "Failed to install %s: %d" pkg status))))))))
+
+        ;; Try to install go tools if `gopls' is not found
+        (unless (executable-find "gopls")
+          (go-update-tools))
+
+        ;; Misc
+        (use-package go-dlv)
+        (use-package go-fill-struct)
+        (use-package go-impl)
+
+        ;; Install: See https://github.com/golangci/golangci-lint#install
+        (use-package flycheck-golangci-lint
+          :if (executable-find "golangci-lint")
+          :after flycheck
+          :defines flycheck-disabled-checkers
+          :hook (go-mode . (lambda ()
+                             "Enable golangci-lint."
+                             (setq flycheck-disabled-checkers '(go-gofmt
+                                                                go-golint
+                                                                go-vet
+                                                                go-build
+                                                                go-test
+                                                                go-errcheck))
+                             (flycheck-golangci-lint-setup))))
+
+        (use-package go-tag
+          :bind (:map go-mode-map
+                 ("C-c t t" . go-tag-add)
+                 ("C-c t T" . go-tag-remove))
+          :init (setq go-tag-args (list "-transform" "camelcase")))
+
+        (use-package go-gen-test
+          :bind (:map go-mode-map
+                 ("C-c t g" . go-gen-test-dwim)))
+
+        (use-package gotest
+          :general (:keymaps 'org-mode-map (kraken/leader-key-def "mta" 'go-test-current-project))
+          :bind (:map go-mode-map
+                 ("C-c t a" . go-test-current-project)
+                 ("C-c t m" . go-test-current-file)
+                 ("C-c t ." . go-test-current-test)
+                 ("C-c t x" . go-run))))
+
+      ;; Local Golang playground for short snippets
+      (use-package go-playground
+        :blackout
+        :commands (go-playground-mode))
+
+  ; load go bin dir into emacs path
+  (add-to-list 'exec-path (expand-file-name "~/go/bin"))
+#+end_src
+
+** Rust
+
+#+begin_src emacs-lisp
+
+(use-package rust-mode
+  :mode "\\.rs\\'"
+  :init (setq rust-format-on-save t))
+
+;(use-package cargo
+;  :straight t
+;  :defer t)
+
+#+end_src
+
+** YAML
+
+#+begin_src emacs-lisp
+
+(use-package yaml-mode
+  :mode "\\.ya?ml\\'")
+
+#+end_src
+
+
+* Productivity
+
+**  Autocomplete with Company Mode
+
+#+begin_src emacs-lisp
+
+(use-package company
+  :blackout
+  :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
+  :commands company-cancel
+  :bind (("M-/" . company-complete)
+         ("C-M-i" . company-complete)
+         :map company-mode-map
+         ("<backtab>" . company-yasnippet)
+         :map company-active-map
+         ("C-p" . company-select-previous)
+         ("C-n" . company-select-next)
+         ("<tab>" . company-complete-common-or-cycle)
+         ("<backtab>" . my-company-yasnippet)
+         :map company-search-map
+         ("C-p" . company-select-previous)
+         ("C-n" . company-select-next))
+  :hook (after-init . global-company-mode)
+  :init
+  (setq company-tooltip-align-annotations t
+        company-tooltip-limit 12
+        company-idle-delay 0
+        company-echo-delay (if (display-graphic-p) nil 0)
+        company-minimum-prefix-length 1
+        company-require-match nil
+        company-dabbrev-ignore-case nil
+        company-dabbrev-downcase nil
+        company-global-modes '(not erc-mode message-mode help-mode
+                                   gud-mode eshell-mode shell-mode)
+        company-backends '((company-capf :with company-yasnippet)
+                           (company-dabbrev-code company-keywords company-files)
+                           company-dabbrev))
+
+  (defun my-company-yasnippet ()
+    "Hide the current completeions and show snippets."
+    (interactive)
+    (company-cancel)
+    (call-interactively 'company-yasnippet))
+  :config
+  ;; `yasnippet' integration
+  (with-no-warnings
+    (with-eval-after-load 'yasnippet
+      (defun company-backend-with-yas (backend)
+        "Add `yasnippet' to company backend."
+        (if (and (listp backend) (member 'company-yasnippet backend))
+            backend
+          (append (if (consp backend) backend (list backend))
+                  '(:with company-yasnippet))))
+
+      (defun my-company-enbale-yas (&rest _)
+        "Enable `yasnippet' in `company'."
+        (setq company-backends (mapcar #'company-backend-with-yas company-backends)))
+
+      (defun my-lsp-fix-company-capf ()
+        "Remove redundant `comapny-capf'."
+        (setq company-backends
+              (remove 'company-backends (remq 'company-capf company-backends))))
+      (advice-add #'lsp-completion--enable :after #'my-lsp-fix-company-capf)
+
+      (defun my-company-yasnippet-disable-inline (fun command &optional arg &rest _ignore)
+        "Enable yasnippet but disable it inline."
+        (if (eq command 'prefix)
+            (when-let ((prefix (funcall fun 'prefix)))
+              (unless (memq (char-before (- (point) (length prefix)))
+                            '(?. ?< ?> ?\( ?\) ?\[ ?{ ?} ?\" ?' ?`))
+                prefix))
+          (progn
+            (when (and (bound-and-true-p lsp-mode)
+                       arg (not (get-text-property 0 'yas-annotation-patch arg)))
+              (let* ((name (get-text-property 0 'yas-annotation arg))
+                     (snip (format "%s (Snippet)" name))
+                     (len (length arg)))
+                (put-text-property 0 len 'yas-annotation snip arg)
+                (put-text-property 0 len 'yas-annotation-patch t arg)))
+            (funcall fun command arg))))
+      (advice-add #'company-yasnippet :around #'my-company-yasnippet-disable-inline)))
+
+  ;; Better sorting and filtering
+  (use-package company-prescient
+    :init (company-prescient-mode 1))
+
+  ;; Icons and quickhelp
+  (use-package company-box
+	  :diminish
+	  :defines company-box-icons-all-the-icons
+	  :hook (company-mode . company-box-mode)
+	  :init (setq
+				   company-box-backends-colors nil
+				   company-box-doc-delay 0.3)
+	  :config
+	  (with-no-warnings
+	    ;; Prettify icons
+	    (defun my-company-box-icons--elisp (candidate)
+		    (when (or (derived-mode-p 'emacs-lisp-mode) (derived-mode-p 'lisp-mode))
+		      (let ((sym (intern candidate)))
+			      (cond ((fboundp sym) 'Function)
+				          ((featurep sym) 'Module)
+				          ((facep sym) 'Color)
+				          ((boundp sym) 'Variable)
+				          ((symbolp sym) 'Text)
+				          (t . nil)))))
+	    (advice-add #'company-box-icons--elisp :override #'my-company-box-icons--elisp))
+
+	  (declare-function all-the-icons-faicon 'all-the-icons)
+	  (declare-function all-the-icons-material 'all-the-icons)
+	  (declare-function all-the-icons-octicon 'all-the-icons)
+	  (setq company-box-icons-all-the-icons
+			    `((Unknown . ,(all-the-icons-material "find_in_page" :height 0.8 :v-adjust -0.15))
+			      (Text . ,(all-the-icons-faicon "text-width" :height 0.8 :v-adjust -0.02))
+			      (Method . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
+			      (Function . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
+			      (Constructor . ,(all-the-icons-faicon "cube" :height 0.8 :v-adjust -0.02 :face 'all-the-icons-purple))
+			      (Field . ,(all-the-icons-octicon "tag" :height 0.85 :v-adjust 0 :face 'all-the-icons-lblue))
+			      (Variable . ,(all-the-icons-octicon "tag" :height 0.85 :v-adjust 0 :face 'all-the-icons-lblue))
+			      (Class . ,(all-the-icons-material "settings_input_component" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-orange))
+			      (Interface . ,(all-the-icons-material "share" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-lblue))
+			      (Module . ,(all-the-icons-material "view_module" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-lblue))
+			      (Property . ,(all-the-icons-faicon "wrench" :height 0.8 :v-adjust -0.02))
+			      (Unit . ,(all-the-icons-material "settings_system_daydream" :height 0.8 :v-adjust -0.15))
+			      (Value . ,(all-the-icons-material "format_align_right" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-lblue))
+			      (Enum . ,(all-the-icons-material "storage" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-orange))
+			      (Keyword . ,(all-the-icons-material "filter_center_focus" :height 0.8 :v-adjust -0.15))
+			      (Snippet . ,(all-the-icons-material "format_align_center" :height 0.8 :v-adjust -0.15))
+			      (Color . ,(all-the-icons-material "palette" :height 0.8 :v-adjust -0.15))
+			      (File . ,(all-the-icons-faicon "file-o" :height 0.8 :v-adjust -0.02))
+			      (Reference . ,(all-the-icons-material "collections_bookmark" :height 0.8 :v-adjust -0.15))
+			      (Folder . ,(all-the-icons-faicon "folder-open" :height 0.8 :v-adjust -0.02))
+			      (EnumMember . ,(all-the-icons-material "format_align_right" :height 0.8 :v-adjust -0.15))
+			      (Constant . ,(all-the-icons-faicon "square-o" :height 0.8 :v-adjust -0.1))
+			      (Struct . ,(all-the-icons-material "settings_input_component" :height 0.8 :v-adjust -0.15 :face 'all-the-icons-orange))
+			      (Event . ,(all-the-icons-octicon "zap" :height 0.8 :v-adjust 0 :face 'all-the-icons-orange))
+			      (Operator . ,(all-the-icons-material "control_point" :height 0.8 :v-adjust -0.15))
+			      (TypeParameter . ,(all-the-icons-faicon "arrows" :height 0.8 :v-adjust -0.02))
+			      (Template . ,(all-the-icons-material "format_align_left" :height 0.8 :v-adjust -0.15)))
+			    company-box-icons-alist 'company-box-icons-all-the-icons)))
+
+#+end_src
+
+
+** Syntax checking with Flycheck
+
+#+begin_src emacs-lisp
+
+(use-package flycheck
+  :defer t
+  :hook (lsp-mode . flycheck-mode))
+
+#+end_src
+
+** Snippets
+
+#+begin_src emacs-lisp
+
+(use-package yasnippet
+  :hook (prog-mode . yas-minor-mode)
+  :config
+  (yas-reload-all))
+
+#+end_src
+
+** File tree with Treemacs
+
+#+begin_src emacs-lisp
+
+  (use-package treemacs
+    :commands (treemacs-follow-mode
+               treemacs-filewatch-mode
+               treemacs-fringe-indicator-mode
+               treemacs-git-mode)
+    :bind (([f8]        . treemacs)
+           ("M-0"       . treemacs-select-window)
+           ("C-x 1"     . treemacs-delete-other-windows)
+           ("C-x t 1"   . treemacs-delete-other-windows)
+           ("C-x t t"   . treemacs)
+           ("C-x t b"   . treemacs-bookmark)
+           ("C-x t C-t" . treemacs-find-file)
+           ("C-x t M-t" . treemacs-find-tag)
+           :map treemacs-mode-map
+           ([mouse-1]   . treemacs-single-click-expand-action))
+    :config
+    (setq treemacs-collapse-dirs           (if treemacs-python-executable 3 0)
+          treemacs-missing-project-action  'remove
+          treemacs-sorting                 'alphabetic-asc
+          treemacs-follow-after-init       t
+          treemacs-width                   30))
+    :config
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null (executable-find "python3"))))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple)))
+
+    (use-package treemacs-projectile
+      :after projectile
+      :bind (:map projectile-command-map
+             ("h" . treemacs-projectile)))
+
+    (use-package treemacs-magit
+      :after magit
+      :commands treemacs-magit--schedule-update
+      :hook ((magit-post-commit
+              git-commit-post-finish
+              magit-post-stage
+              magit-post-unstage)
+             . treemacs-magit--schedule-update))
+
+    (use-package treemacs-persp
+      :after persp-mode
+      :demand t
+      :functions treemacs-set-scope-type
+      :config (treemacs-set-scope-type 'Perspectives))
+
+#+end_src
+
+#+begin_src emacs-lisp
+  (kraken/leader-key-def
+    "ct" 'treemacs
+    "pt" 'treemacs-projectile)
+#+end_src
+
+** Rainbow Delimiters
+
+#+begin_src emacs-lisp
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+#+end_src
+
+
+** Column number mode
+
+#+begin_src emacs-lisp
+
+(column-number-mode)
+
+#+end_src
+
+
+** Line number mode
+
+#+begin_src emacs-lisp
+
+  ;; Enable line numbers for prog modes only
+  (add-hook 'prog-mode-hook
+            (lambda ()
+              (display-line-numbers-mode 1)
+              (display-fill-column-indicator-mode 1)))
+
+#+end_src
+
+** Fill line column
+
+#+begin_src emacs-lisp
+
+(setq-default fill-column 80)
+
+#+end_src
+
+** Tab Width
+
+#+begin_src emacs-lisp
+
+  (setq-default tab-width 4)
+  (setq-default evil-shift-width tab-width)
+
+#+end_src
+
+** Paren mode
+
+#+begin_src emacs-lisp
+
+  (use-package paren
+    :hook (prog-mode . show-paren-mode))
+
+#+end_src
+
+** Rainbow mode
+#+begin_src emacs-lisp
+
+  (use-package rainbow-mode
+    :commands rainbow-mode)
+
+#+end_src
+
+* Applications
+
+** Binding Prefix
+
+#+begin_src emacs-lisp
+
+(kraken/leader-key-def
+  "a"  '(:ignore t :which-key "apps"))
+
+#+end_src
+
+** Mail
+
+** Calendar
+
+#+begin_src emacs-lisp
+
+;(use-package calfw
+  ;:commands cfw:open-org-calendar
+  ;:config
+  ;(setq cfw:fchar-junction ?╋
+  ;      cfw:fchar-vertical-line ?┃
+  ;      cfw:fchar-horizontal-line ?━
+  ;      cfw:fchar-left-junction ?┣
+  ;      cfw:fchar-right-junction ?┫
+  ;      cfw:fchar-top-junction ?┯
+  ;      cfw:fchar-top-left-corner ?┏
+  ;      cfw:fchar-top-right-corner ?┓)
+
+  ;(use-package calfw-org
+  ;  :config
+  ;  (setq cfw:org-agenda-schedule-args '(:timestamp))))
+
+;(kraken/leader-key-def
+  ;"ac"  '(cfw:open-org-calendar :which-key "calendar"))
+
+#+end_src
+
+* Requires for the mean time
+
+#+begin_src emacs-lisp
+
+(require 'init-key)
+(require 'init-ui)
+(require 'init-search)
+
+#+end_src

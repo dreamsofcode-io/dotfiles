@@ -1,0 +1,14 @@
+elpa/
+auto-save-list/
+url/
+*.el~
+*.data
+*.eld
+straight
+var/
+.lsp-session*
+transient/
+projectile.cache
+eshell
+forge-database.sqlite
+.cache

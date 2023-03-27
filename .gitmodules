@@ -1,0 +1,6 @@
+[submodule ".zgen"] 
+  path = .zgen 
+  url = https://github.com/tarjoilija/zgen
+[submodule ".config/nvim"]
+	path = .config/nvim
+	url = git@github.com:elliottminns/NVChad
