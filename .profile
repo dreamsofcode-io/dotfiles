@@ -3,9 +3,6 @@ alias vim='nvim'
 alias ls='ls --color=auto'
 alias k='kubectl'
 alias h='helm'
-alias vidaru-git='git config --local user.email "vidaru@protonmail.com"; git config --local user.name "vidaru"'
-alias valar-git='git config --local user.email "elliott@valar.io"; git config --local user.name "Elliott Minns"'
-alias elliott-git='git config --local user.email "elliott.minns@me.com"; git config --local user.name "Elliott Minns"'
 
 export EDITOR="nvim"
 export SHELL="zsh"
