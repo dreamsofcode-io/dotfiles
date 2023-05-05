@@ -92,3 +92,5 @@ alias capslock="sudo killall -USR1 caps2esc"
 if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
     export MOZ_ENABLE_WAYLAND=1
 fi
+
+zle_highlight=('paste:none')
