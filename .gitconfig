@@ -1,0 +1,21 @@
+[user]
+	email = elliott.minns@pm.me
+	name = Elliott Minns
+	gpgSign = true
+#[credential]
+#	helper = /usr/lib/git-core/git-credential-libsecret
+[pull]
+	rebase = true
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[init]
+	defaultBranch = main
+[tag]
+	gpgSign = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[gpg]
+	program = gpg2
