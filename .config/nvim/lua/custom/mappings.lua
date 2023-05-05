@@ -24,6 +24,24 @@ M.dap = {
   }
 }
 
+M.dap_go = {
+  plugin = true,
+  n = {
+    ["<leader>dgr"] = {
+      function()
+        require('dap-go').debug_test()
+      end,
+      "Debug go test"
+    },
+    ["<leader>dgl"] = {
+      function()
+        require('dap-go').debug_last()
+      end,
+      "Debug last go test"
+    }
+  }
+}
+
 M.crates = {
   plugin = true,
   n = {
