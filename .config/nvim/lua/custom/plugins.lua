@@ -26,9 +26,13 @@ local plugins = {
     "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
+        "black",
         "gopls",
+        "mypy",
+        "ruff",
         "rust-analyzer",
         "python-lsp-server",
+        "pyright",
       },
     },
   },
@@ -52,7 +56,7 @@ local plugins = {
   },
   {
     "jose-elias-alvarez/null-ls.nvim",
-    ft = "go",
+    ft = {"go", "python"},
     opts = function()
       return require "custom.configs.null-ls"
     end,
@@ -131,5 +135,19 @@ local plugins = {
       return M
     end,
   },
+  {
+    "elliottminns/ChatGPT.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    },
+    config = function()
+      require("chatgpt").setup({
+        async_api_key_cmd = "pass show api/openai",
+      })
+    end,
+  }
 }
 return plugins
