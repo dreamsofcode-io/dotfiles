@@ -139,6 +139,8 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
+gaps inner 15
+
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+2 workspace number $ws2
@@ -207,3 +209,5 @@ bar {
 # exec_always --no-startup-id sh $HOME/.config/polybar/launch.sh
 exec feh --bg-scale "/home/elliott/Pictures/wallpapers/minimalistic/dark-cat-rosewater.png"
 exec --no-startup-id compton
+
+

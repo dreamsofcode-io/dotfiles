@@ -1,9 +1,9 @@
 ;; Variable for font sizing
-(defvar kraken/default-font-size 100)
-(defvar kraken/default-variable-font-size 120)
+(defvar dreams/default-font-size 100)
+(defvar dreams/default-variable-font-size 120)
 
 ;; Make frame transparency overridable
-(defvar kraken/frame-transparency '(90 . 90))
+(defvar dreams/frame-transparency '(90 . 90))
 
 ;; Bootstrap straight.el
 (setq straight-use-package-by-default t
@@ -30,11 +30,11 @@
 
 (server-start)
 
-(setq kraken/exwm-enabled (and (eq window-system 'x)
+(setq dreams/exwm-enabled (and (eq window-system 'x)
                            (seq-contains command-line-args "--use-exwm")))
 
-(when kraken/exwm-enabled
-  (require 'kraken-desktop))
+(when dreams/exwm-enabled
+  (require dreams-desktop))
 
 (setq inhibit-startup-message t)
 
@@ -60,7 +60,7 @@
 
 (global-set-key (kbd "C-x C-b") #'ibuffer)
 
-(defun kraken/evil-hook ()
+(defun dreams/evil-hook ()
   (dolist (mode '(custom-mode
                   eshell-mode
                   git-rebase-mode
@@ -72,7 +72,7 @@
                   term-mode))
     (add-to-list 'evil-emacs-state-modes mode)))
 
-(defun kraken/dont-arrow-me-bro ()
+(defun dreams/dont-arrow-me-bro ()
   (interactive)
   (message "Arrow keys are bad, you know?"))
 
@@ -89,7 +89,7 @@
   (setq evil-respect-visual-line-mode t)
   (setq evil-undo-system 'undo-tree)
   :config
-  (add-hook 'evil-mode-hook 'kraken/evil-hook)
+  (add-hook 'evil-mode-hook 'dreams/evil-hook)
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
@@ -99,14 +99,14 @@
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
   ;; Disable arrow keys in normal and visual modes
-  (define-key evil-normal-state-map (kbd "<left>") 'kraken/dont-arrow-me-bro)
-  (define-key evil-normal-state-map (kbd "<right>") 'kraken/dont-arrow-me-bro)
-  (define-key evil-normal-state-map (kbd "<down>") 'kraken/dont-arrow-me-bro)
-  (define-key evil-normal-state-map (kbd "<up>") 'kraken/dont-arrow-me-bro)
-  (evil-global-set-key 'motion (kbd "<left>") 'kraken/dont-arrow-me-bro)
-  (evil-global-set-key 'motion (kbd "<right>") 'kraken/dont-arrow-me-bro)
-  (evil-global-set-key 'motion (kbd "<down>") 'kraken/dont-arrow-me-bro)
-  (evil-global-set-key 'motion (kbd "<up>") 'kraken/dont-arrow-me-bro)
+  (define-key evil-normal-state-map (kbd "<left>") 'dreams/dont-arrow-me-bro)
+  (define-key evil-normal-state-map (kbd "<right>") 'dreams/dont-arrow-me-bro)
+  (define-key evil-normal-state-map (kbd "<down>") 'dreams/dont-arrow-me-bro)
+  (define-key evil-normal-state-map (kbd "<up>") 'dreams/dont-arrow-me-bro)
+  (evil-global-set-key 'motion (kbd "<left>") 'dreams/dont-arrow-me-bro)
+  (evil-global-set-key 'motion (kbd "<right>") 'dreams/dont-arrow-me-bro)
+  (evil-global-set-key 'motion (kbd "<down>") 'dreams/dont-arrow-me-bro)
+  (evil-global-set-key 'motion (kbd "<up>") 'dreams/dont-arrow-me-bro)
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
@@ -122,12 +122,12 @@
   :config
   (general-evil-setup t)
 
-  (general-create-definer kraken/leader-key-def
+  (general-create-definer dreams/leader-key-def
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-SPC")
 
-  (general-create-definer kraken/ctrl-c-keys
+  (general-create-definer dreams/ctrl-c-keys
     :prefix "C-c"))
 
 (use-package blackout
@@ -145,16 +145,16 @@
 
 (set-face-attribute 'default nil
   :font "JetBrains Mono Nerd Font" 
-  :height kraken/default-font-size 
+  :height dreams/default-font-size
   :weight 'medium)
 
 (set-face-attribute 'fixed-pitch nil 
   :font "JetBrains Mono Nerd Font" 
-  :height kraken/default-font-size)
+  :height dreams/default-font-size)
 
 (set-face-attribute 'variable-pitch nil 
   :font "Cantarell"
-  :height kraken/default-variable-font-size
+  :height dreams/default-variable-font-size
   :weight 'regular)
 
 (use-package all-the-icons)
@@ -168,7 +168,7 @@
   :config
   (setq alert-default-style 'notifications))
 
-(kraken/leader-key-def
+(dreams/leader-key-def
   "t"  '(:ignore t :which-key "toggles")
   "tt" '(load-theme :which-key "choose theme")
   "tw" 'whitespace-mode
@@ -205,7 +205,7 @@
         smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
         smart-yank)))  ; Yank behavior depend on mode.
 
-(kraken/leader-key-def
+(dreams/leader-key-def
   "tp" 'parinfer-toggle-mode)
 
 (use-package origami
@@ -215,7 +215,7 @@
 (setq-default fill-column 80)
 
 ;; Turn on indentation and auto-fill mode for Org files
-(defun kraken/org-mode-setup ()
+(defun dreams/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
   (auto-fill-mode 0)
@@ -225,7 +225,7 @@
 
 (use-package org
   :defer t
-  ;:hook (org-mode . kraken/org-mode-setup)
+  ;:hook (org-mode . dreams/org-mode-setup)
   :config
   (setq org-ellipsis " ▾"
         org-hide-emphasis-markers t
@@ -265,17 +265,17 @@
 
   ;; NOTE: Subsequent sections are still part of this use-package block!
 
-(require 'kraken-org)
-;(require 'kraken-workflow)
+(require 'dreams-org)
+;(require 'dreams-workflow)
 
 ;; Since we don't want to disable org-confirm-babel-evaluate all
 ;; of the time, do it around the after-save-hook
-(defun kraken/org-babel-tangle-dont-ask ()
+(defun dreams/org-babel-tangle-dont-ask ()
   ;; Dynamic scoping to the rescue
   (let ((org-confirm-babel-evaluate nil))
     (org-babel-tangle)))
 
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'kraken/org-babel-tangle-dont-ask
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'dreams/org-babel-tangle-dont-ask
                                               'run-at-end 'only-in-org-mode)))
 
 (use-package org-superstar
@@ -345,12 +345,12 @@
   ;(setq org-pomodoro-long-break-sound "~/.emacs.d/sounds/three_beeps.wav")
   ;(setq org-pomodoro-finished-sound "~/.emacs.d/sounds/meditation_bell.wav")
 
-  ;(kraken/leader-key-def
+  ;(dreams/leader-key-def
     ;"op"  '(org-pomodoro :which-key "pomodoro")))
 
 (require 'org-protocol)
 
-(defun kraken/search-org-files ()
+(defun dreams/search-org-files ()
   (interactive)
   (counsel-rg "" "~/Notes" nil "Search Notes: "))
 
@@ -363,7 +363,7 @@
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
-(kraken/leader-key-def
+(dreams/leader-key-def
   "o"   '(:ignore t :which-key "org mode")
 
   "oi"  '(:ignore t :which-key "insert")
@@ -371,7 +371,7 @@
 
   "on"  '(org-toggle-narrow-to-subtree :which-key "toggle narrow")
 
-  "os"  '(kraken/counsel-rg-org-files :which-key "search notes")
+  "os"  '(dreams/counsel-rg-org-files :which-key "search notes")
 
   "oa"  '(org-agenda :which-key "status")
   "oc"  '(org-capture t :which-key "capture")
@@ -380,7 +380,7 @@
 ;; This ends the use-package org-mode block
 )
 
-(kraken/leader-key-def
+(dreams/leader-key-def
   "c" '(:ignore t :which-key "code"))
 
 (use-package magit
@@ -389,7 +389,7 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-(kraken/leader-key-def
+(dreams/leader-key-def
   "g"   '(:ignore t :which-key "git")
   "gs"  'magit-status
   "gd"  'magit-diff-unstaged
@@ -485,7 +485,7 @@
 (use-package counsel-projectile
   :config (counsel-projectile-mode 1))
 
-(kraken/leader-key-def
+(dreams/leader-key-def
   "p"  '(:ignore p :which-key "projectile")
   "pf"  'counsel-projectile-find-file
   "ps"  'counsel-projectile-switch-project
@@ -502,7 +502,7 @@
   :bind (:map lsp-mode-map
          ("TAB" . completion-at-point)))
 
-(kraken/leader-key-def
+(dreams/leader-key-def
   "l"  '(:ignore t :which-key "lsp")
   "ld" 'xref-find-definitions
   "lr" 'xref-find-references
@@ -608,7 +608,7 @@
                ("C-c t g" . go-gen-test-dwim)))
 
       (use-package gotest
-        :general (:keymaps 'org-mode-map (kraken/leader-key-def "mta" 'go-test-current-project))
+        :general (:keymaps 'org-mode-map (dreams/leader-key-def "mta" 'go-test-current-project))
         :bind (:map go-mode-map
                ("C-c t a" . go-test-current-project)
                ("C-c t m" . go-test-current-file)
@@ -829,7 +829,7 @@
     :functions treemacs-set-scope-type
     :config (treemacs-set-scope-type 'Perspectives))
 
-(kraken/leader-key-def
+(dreams/leader-key-def
   "ct" 'treemacs
   "pt" 'treemacs-projectile)
 
@@ -855,7 +855,7 @@
 (use-package rainbow-mode
   :commands rainbow-mode)
 
-(kraken/leader-key-def
+(dreams/leader-key-def
   "a"  '(:ignore t :which-key "apps"))
 
 ;(use-package calfw
@@ -874,7 +874,7 @@
   ;  :config
   ;  (setq cfw:org-agenda-schedule-args '(:timestamp))))
 
-;(kraken/leader-key-def
+;(dreams/leader-key-def
   ;"ac"  '(cfw:open-org-calendar :which-key "calendar"))
 
 (require 'init-key)

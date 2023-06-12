@@ -94,3 +94,7 @@ if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
 fi
 
 zle_highlight=('paste:none')
+
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
