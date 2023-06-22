@@ -6,6 +6,11 @@ local options = {
   server = {
     on_attach = on_attach,
     capabilities = capabilities,
+    ["rust-analyzer"] = {
+      cargo = {
+        features = { "all" },
+      },
+    },
   }
 }
 
