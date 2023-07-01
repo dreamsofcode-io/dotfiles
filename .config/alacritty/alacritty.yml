@@ -35,6 +35,8 @@ window:
 
   dynamic_title: true
 
+  option_as_alt: Both
+
 # When true, bold text is drawn using the bright variant of colors.
 draw_bold_text_with_bright_colors: true
 
@@ -59,7 +61,7 @@ font:
     # style: Regular
 
   # Point size of the font
-  size: 15
+  size: 20
 
   # Offset is the extra space around each character. offset.y can be thought of
   # as modifying the linespacing, and offset.x as modifying the letter spacing.

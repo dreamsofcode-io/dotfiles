@@ -6,8 +6,8 @@
 #	helper = /usr/lib/git-core/git-credential-libsecret
 [pull]
 	rebase = true
-[url "git@github.com:"]
-	insteadOf = https://github.com/
+#[url "git@github.com:"]
+  #insteadOf = https://github.com/
 [init]
 	defaultBranch = main
 [tag]
@@ -18,4 +18,4 @@
 	process = git-lfs filter-process
 	required = true
 [gpg]
-	program = gpg2
+	program = gpg

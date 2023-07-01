@@ -6,6 +6,19 @@ else
   export GPG_TTY="$TTY"
 fi
 
+
+# Nix
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+# End Nix
+
+export PATH="/usr/local/bin:/usr/bin:$PATH"
+
+if [ Darwin = `uname` ]; then
+  source $HOME/.profile-macos
+fi
+
 # SSH_AUTH_SOCK set to GPG to enable using gpgagent as the ssh agent.
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 gpgconf --launch gpg-agent
@@ -17,7 +30,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-export PATH="/usr/local/bin:/usr/bin"
 
 autoload -Uz compinit && compinit
 
@@ -50,9 +62,7 @@ export LC_ALL=en_US.UTF-8
 source $HOME/.profile
 source $HOME/.config/tmuxinator/tmuxinator.zsh
 
-if [ Darwin = `uname` ]; then
-  source $HOME/.profile-macOS
-elif [ Linux = `uname` ]; then
+if [ Linux = `uname` ]; then
   source $HOME/.profile-linux
 fi
 
@@ -94,7 +104,3 @@ if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
 fi
 
 zle_highlight=('paste:none')
-
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"

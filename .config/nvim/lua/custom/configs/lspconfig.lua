@@ -4,21 +4,6 @@ local capabilities = require("plugins.configs.lspconfig").capabilities
 local lspconfig = require("lspconfig")
 local util = require "lspconfig/util"
 
---lspconfig.pylsp.setup{
-  --on_attach = on_attach,
-  --capabilities = capabilities,
-  --filetypes = {"python"},
-  --settings = {
-    --pylsp = {
-      --plugins = {
-        --pycodestyle = {
-          --maxLineLength = 80
-        --}
-      --}
-    --}
-  --}
---}
-
 lspconfig.pyright.setup{
   on_attach = on_attach,
   capabilities = capabilities,
@@ -50,4 +35,9 @@ lspconfig.terraformls.setup {
   capabilities = capabilities,
   cmd = {"terraform-ls", "serve"},
   root_dir = util.root_pattern(".terraform", ".git"),
+}
+
+lspconfig.clangd.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
 }

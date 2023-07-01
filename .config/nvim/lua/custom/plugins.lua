@@ -27,10 +27,15 @@ local plugins = {
     opts = {
       ensure_installed = {
         "black",
+        "clangd",
+        "clang-format",
+        "codelldb",
+        "debugpy",
         "gopls",
         "mypy",
         "ruff",
         "rust-analyzer",
+        "prettier",
         "python-lsp-server",
         "pyright",
       },
@@ -56,24 +61,68 @@ local plugins = {
   },
   {
     "jose-elias-alvarez/null-ls.nvim",
-    ft = {"go", "python"},
+    event = "VeryLazy",
     opts = function()
       return require "custom.configs.null-ls"
     end,
   },
   {
     "mfussenegger/nvim-dap",
-    init = function()
+    config = function(_, _opts)
       require("core.utils").load_mappings("dap")
     end
   },
   {
+    "jay-babu/mason-nvim-dap.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+    },
+    opts = {
+      handlers = {}
+    },
+  },
+  {
     "leoluz/nvim-dap-go",
     ft = "go",
-    dependencies = "mfussenegger/nvim-dap",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+    },
     config = function(_, opts)
       require("dap-go").setup(opts)
       require("core.utils").load_mappings("dap_go")
+    end
+  },
+  {
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+    },
+    config = function(_, opts)
+      require("dap-python").setup("~/.local/share/nvim/mason/packages/debugpy/venv/bin/python")
+    end,
+  },
+  {
+    "rcarriga/nvim-dap-ui",
+    dependencies = "mfussenegger/nvim-dap",
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+      require("dapui").setup()
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
     end
   },
   {
@@ -88,13 +137,16 @@ local plugins = {
   },
   {
     'saecki/crates.nvim',
-    ft = {"rust", "toml"},
+    ft = {"toml"},
     config = function(_, opts)
       local crates  = require('crates')
       crates.setup(opts)
-      require('cmp').setup.buffer({
-        sources = { { name = "crates" }}
+      local cmp = require('cmp')
+      local config = cmp.get_config()
+      table.insert(config.sources, {
+        name = "crates",
       })
+      cmp.setup(config)
       crates.show()
       require("core.utils").load_mappings("crates")
     end,
@@ -145,7 +197,17 @@ local plugins = {
     },
     config = function()
       require("chatgpt").setup({
-        async_api_key_cmd = "pass show api/openai",
+        api_key_cmd = "pass show api/openai",
+        edit_with_instructions = {
+          diff = false,
+          keymaps = {
+            accept = "<C-y>",
+            toggle_diff = "<C-d>",
+            toggle_settings = "<C-o>",
+            cycle_windows = "<Tab>",
+            use_output_as_input = "<C-a>",
+          },
+        },
       })
     end,
   }
