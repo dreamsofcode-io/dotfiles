@@ -33,6 +33,7 @@ lspconfig.gopls.setup {
 lspconfig.terraformls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
+  filetypes = {"terraform"},
   cmd = {"terraform-ls", "serve"},
   root_dir = util.root_pattern(".terraform", ".git"),
 }

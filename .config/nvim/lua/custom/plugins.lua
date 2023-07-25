@@ -38,6 +38,7 @@ local plugins = {
         "prettier",
         "python-lsp-server",
         "pyright",
+        "terraform-ls",
       },
     },
   },
@@ -141,12 +142,6 @@ local plugins = {
     config = function(_, opts)
       local crates  = require('crates')
       crates.setup(opts)
-      local cmp = require('cmp')
-      local config = cmp.get_config()
-      table.insert(config.sources, {
-        name = "crates",
-      })
-      cmp.setup(config)
       crates.show()
       require("core.utils").load_mappings("crates")
     end,
@@ -189,7 +184,7 @@ local plugins = {
   },
   {
     "elliottminns/ChatGPT.nvim",
-    event = "VeryLazy",
+    --event = "VeryLazy", -- Disabling this as seeing little usage
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
