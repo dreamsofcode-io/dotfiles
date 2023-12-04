@@ -187,11 +187,7 @@ local plugins = {
   },
   {
     "elliottminns/ChatGPT.nvim",
-<<<<<<< HEAD
     --event = "VeryLazy", -- Disabling this as seeing little usage
-=======
-    --event = "VeryLazy",
->>>>>>> e4601dc (TailwindCSS lsp)
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
