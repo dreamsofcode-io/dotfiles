@@ -32,6 +32,8 @@ local plugins = {
         "codelldb",
         "debugpy",
         "gopls",
+        "goimports-reviser",
+        "golines",
         "mypy",
         "ruff",
         "rust-analyzer",
@@ -39,6 +41,7 @@ local plugins = {
         "python-lsp-server",
         "pyright",
         "terraform-ls",
+        "tailwindcss-language-server",
       },
     },
   },
@@ -184,7 +187,11 @@ local plugins = {
   },
   {
     "elliottminns/ChatGPT.nvim",
+<<<<<<< HEAD
     --event = "VeryLazy", -- Disabling this as seeing little usage
+=======
+    --event = "VeryLazy",
+>>>>>>> e4601dc (TailwindCSS lsp)
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",

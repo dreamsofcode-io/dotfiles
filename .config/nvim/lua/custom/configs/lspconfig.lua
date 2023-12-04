@@ -40,5 +40,13 @@ lspconfig.terraformls.setup {
 
 lspconfig.clangd.setup {
   on_attach = on_attach,
+  capabilities = (function()
+    capabilities.offsetEncoding = {"utf-16"}
+    return capabilities
+  end)()
+}
+
+lspconfig.tailwindcss.setup {
+  on_attach = on_attach,
   capabilities = capabilities,
 }

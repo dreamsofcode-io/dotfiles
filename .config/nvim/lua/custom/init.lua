@@ -6,3 +6,4 @@ vim.api.nvim_create_autocmd("BufReadPre", { pattern = "/private/*", command = "s
 
 -- Enable persistent undo for other files
 vim.opt.undofile = true
+
