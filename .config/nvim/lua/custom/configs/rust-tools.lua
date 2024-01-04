@@ -5,7 +5,6 @@ local options = {
   server = {
     on_attach = on_attach,
     capabilities = capabilities,
-    cmd = {"/Users/elliott/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer"},
   }
 }
 
