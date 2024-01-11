@@ -65,7 +65,7 @@
     command_execution_time    # previous command duration
     virtualenv                # python virtual environment
     context                   # user@host
-    time                      # current time
+    #time                      # current time
     # =========================[ Line #2 ]=========================
     newline                   # \n
   )
