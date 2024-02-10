@@ -93,7 +93,6 @@ program = "/bin/zsh"
 [window]
 decorations = "full"
 dynamic_title = true
-option_as_alt = "Both"
 startup_mode = "Maximized"
 
 [window.dimensions]

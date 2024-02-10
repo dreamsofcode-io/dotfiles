@@ -9,6 +9,8 @@ if ! zgen saved; then
   zgen oh-my-zsh plugins/kubectl
   zgen oh-my-zsh plugins/rust
   zgen oh-my-zsh plugins/command-not-found
+  zgen oh-my-zsh plugins/kubectx
+  zgen oh-my-zsh plugins/kube-ps1
   zgen load zsh-users/zsh-completions
   zgen load zsh-users/zsh-syntax-highlighting
   zgen load zsh-users/zsh-autosuggestions

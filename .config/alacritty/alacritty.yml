@@ -86,38 +86,38 @@ debug.render_timer: false
 colors:
   # Default colors
   primary:
-    background: '0x1E1D2F'
-    foreground: '0xD9E0EE'
+    background: "0x1E1D2F"
+    foreground: "0xD9E0EE"
 
   cursor:
-    text: '0x1E1D2F'
-    cursor: '0xF5E0DC'
+    text: "0x1E1D2F"
+    cursor: "0xF5E0DC"
 
   # Normal colors
   normal:
-    black: '0x6E6C7E'
-    red: '0xF28FAD'
-    green: '0xABE9B3'
-    yellow: '0xFAE3B0'
-    blue: '0x96CDFB'
-    magenta: '0xF5C2E7'
-    cyan: '0x89DCEB'
-    white: '0xD9E0EE'
+    black: "0x6E6C7E"
+    red: "0xF28FAD"
+    green: "0xABE9B3"
+    yellow: "0xFAE3B0"
+    blue: "0x96CDFB"
+    magenta: "0xF5C2E7"
+    cyan: "0x89DCEB"
+    white: "0xD9E0EE"
 
   # Bright colors
   bright:
-    black: '0x988BA2'
-    red: '0xF28FAD'
-    green: '0xABE9B3'
-    yellow: '0xFAE3B0'
-    blue: '0x96CDFB'
-    magenta: '0xF5C2E7'
-    cyan: '0x89DCEB'
-    white: '0xD9E0EE'
+    black: "0x988BA2"
+    red: "0xF28FAD"
+    green: "0xABE9B3"
+    yellow: "0xFAE3B0"
+    blue: "0x96CDFB"
+    magenta: "0xF5C2E7"
+    cyan: "0x89DCEB"
+    white: "0xD9E0EE"
 
   indexed_colors:
-    - { index: 16, color: '0xF8BD96' }
-    - { index: 17, color: '0xF5E0DC' }
+    - { index: 16, color: "0xF8BD96" }
+    - { index: 17, color: "0xF5E0DC" }
 # Visual Bell
 #
 # Any time the BEL code is received, Alacritty "rings" the visual bell. Once
@@ -189,7 +189,7 @@ mouse:
   faux_scrolling_lines: 1
 
 selection:
-  semantic_escape_chars: ",│`|:\"' ()[]{}<>"
+  semantic_escape_chars: ',│`|:"'' ()[]{}<>'
 
 # Style of the cursor
 #
