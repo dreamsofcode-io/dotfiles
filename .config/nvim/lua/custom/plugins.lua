@@ -31,16 +31,19 @@ local plugins = {
         "clang-format",
         "codelldb",
         "debugpy",
+        "eslint-lsp",
         "gopls",
         "goimports-reviser",
         "golines",
+        "html-lsp",
         "mypy",
         "ruff",
         "rust-analyzer",
-        "prettier",
+        "prettierd",
         "python-lsp-server",
         "pyright",
         "terraform-ls",
+        "typescript-language-server",
         "tailwindcss-language-server",
       },
     },
@@ -201,6 +204,29 @@ local plugins = {
           },
         },
       })
+    end,
+  },
+  {
+    "windwp/nvim-ts-autotag",
+    ft = {"html", "javascript", "javascriptreact", "typescript", "typescriptreact", "svelte", "vue"},
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = function()
+      opts = require "plugins.configs.treesitter"
+      opts.ensure_installed = { 
+        "lua",
+        "go",
+        "rust",
+        "javascript",
+        "typescript",
+        "tsx",
+        "html",
+      }
+      return opts
     end,
   }
 }

@@ -9,7 +9,7 @@ local opts = {
     null_ls.builtins.formatting.goimports_reviser,
     null_ls.builtins.formatting.golines,
     null_ls.builtins.diagnostics.ruff,
-    null_ls.builtins.formatting.prettier,
+    null_ls.builtins.formatting.prettierd,
     null_ls.builtins.code_actions.gitsigns,
   },
   on_attach = function(client, bufnr)
