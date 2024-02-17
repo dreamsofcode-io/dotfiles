@@ -5,11 +5,14 @@ return {
     cmd = "Telescope",
     init = function()
       local builtin = require('telescope.builtin')
-      vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-      vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-      vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-      vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-      vim.keymap.set('n', '<leader>fn', ":Telescope file_browser path=%:p:h select_buffer=true<CR>", {})
+      local wk = require('which-key')
+      wk.register({
+        ['ff'] = { builtin.find_files, "Find File" },
+        ['fb'] = { builtin.buffers, "Find Buffer" },
+        ['fg'] = { builtin.live_grep, "Find with Grep" },
+        ['fh'] = { builtin.help_tags, "Find Help" },
+        ['fn'] = { ":Telescope file_browser path=%:p:h select_buffer=true<CR>", "File Browser" },
+      }, { prefix = "<leader>" })
     end,
     opts = function()
       return {
@@ -24,20 +27,15 @@ return {
             "--column",
             "--smart-case",
           },
+	  previewer = true,
+	  file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
+	  grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
+	  qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
         },
         extensions = {
           file_browser = {
             theme = "ivy",
-            -- disables netrw and use telescope-file-browser in its place
             hijack_netrw = true,
-            mappings = {
-              ["i"] = {
-                -- your custom insert mode mappings
-              },
-              ["n"] = {
-                -- your custom normal mode mappings
-              },
-            },
           },
         },
         extensions_list = {
@@ -63,12 +61,13 @@ return {
   {
     "folke/which-key.nvim",
     keys = { "<leader>", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
-    init = function()
-      --require("core.utils").load_mappings "whichkey"
-    end,
     cmd = "WhichKey",
     config = function(_, opts)
-      require("which-key").setup(opts)
+      local wk = require('which-key')
+      wk.setup(opts)
+      wk.register({
+        ['f'] = { name = "Find" },
+      }, { prefix = "<leader>" })
     end,
   },
 }
