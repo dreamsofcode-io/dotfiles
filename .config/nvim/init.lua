@@ -16,8 +16,6 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
-require('lazy').setup("plugins");
-
 -- Set highlight on search
 vim.o.hlsearch = false
 
@@ -58,3 +56,5 @@ vim.o.termguicolors = true
 -- add binaries installed by mason.nvim to path
 local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 vim.env.PATH = vim.fn.stdpath "data" .. "/mason/bin" .. (is_windows and ";" or ":") .. vim.env.PATH
+
+require('lazy').setup("plugins");
