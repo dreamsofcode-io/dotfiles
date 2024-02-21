@@ -1,5 +1,7 @@
 return {
-  ensure_installed = { 
-    "lua-language-server" 
-  }, 
+  ensure_installed = {
+    "lua-language-server",
+    "rustfmt",
+    "stylua"
+  },
 }
