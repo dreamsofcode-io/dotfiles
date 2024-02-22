@@ -27,10 +27,10 @@ return {
             "--column",
             "--smart-case",
           },
-	  previewer = true,
-	  file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
-	  grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
-	  qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
+          previewer = true,
+          file_previewer = require 'telescope.previewers'.vim_buffer_cat.new,
+          grep_previewer = require 'telescope.previewers'.vim_buffer_vimgrep.new,
+          qflist_previewer = require 'telescope.previewers'.vim_buffer_qflist.new,
         },
         extensions = {
           file_browser = {
@@ -59,6 +59,19 @@ return {
   },
   {
     'nvim-tree/nvim-web-devicons',
+  },
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    event = "VeryLazy",
+    opts = {
+      options = {
+        icons_enabled = true,
+        theme = 'auto',
+        component_separators = '|',
+        section_separators = { left = '', right = '' },
+      },
+    },
   },
   -- Only load whichkey after all the gui
   {
