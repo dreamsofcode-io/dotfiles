@@ -12,3 +12,7 @@ lspconfig.lua_ls.setup {
 }
 
 lspconfig.rust_analyzer.setup {}
+
+lspconfig.gopls.setup {
+    filetypes = { "go", "gomod", "gowork", "gotmpl" },
+}

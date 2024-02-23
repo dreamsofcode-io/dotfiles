@@ -3,6 +3,9 @@ local null_ls = require('null-ls')
 
 return {
   sources = {
+    null_ls.builtins.formatting.gofumpt,
+    null_ls.builtins.formatting.golines,
+    null_ls.builtins.formatting.goimports,
     null_ls.builtins.formatting.rustfmt,
     null_ls.builtins.formatting.stylua,
   },

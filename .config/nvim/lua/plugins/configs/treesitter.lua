@@ -1,6 +1,8 @@
 return {
   ensure_installed = {
+    "go",
     "lua",
+    "pkl",
     "rust",
   },
   highlight = {

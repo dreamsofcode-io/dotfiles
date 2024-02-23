@@ -67,6 +67,9 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
+    dependencies = {
+      "apple/pkl-neovim"
+    },
     opts = function()
       return require "plugins.configs.treesitter"
     end,
