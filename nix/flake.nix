@@ -11,7 +11,8 @@
     nixosConfigurations.itachi = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        ./itachi/configuration.nix
+      	./itachi/hardware-configuration.nix
+        ./configuration.nix
         disko.nixosModules.disko
 	./itachi/disko-config.nix
       ];
