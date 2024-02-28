@@ -73,9 +73,11 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    ripgrep
-    neovim
+    interception-tools
     git
+    neovim
+    ripgrep
+    tmux
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -90,6 +92,21 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
+  # Enable interception tools. Possibly only needed for
+  # laptop computers.
+  services.interception-tools = {
+    enable = true;
+    plugins = with pkgs; [
+      interception-tools-plugins.caps2esc
+    ];
+    udevmonConfig = ''
+      - JOB: "${pkgs.interception-tools}/bin/intercept -g $DEVNODE | ${pkgs.interception-tools-plugins.caps2esc}/bin/caps2esc -m 1 | ${pkgs.interception-tools}/bin/uinput -d $DEVNODE"
+        DEVICE:
+          EVENTS:
+            EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+    '';
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
