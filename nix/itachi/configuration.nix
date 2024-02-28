@@ -8,9 +8,22 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      "${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
+      "${
+        builtins.fetchTarball {
+          url = "https://github.com/nix-community/disko/archive/master.tar.gz";
+	  sha256 = "0j6dhhaj3w7m76v37ggnagmwhjl2lj4bj1l82j89dlx6adb8jfvi";
+	}
+       }/module.nix"
       ./disko-config.nix
     ];
+
+  nix = {
+    package = pkgs.nixFlakes;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
+
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -69,7 +82,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    neovim
+    git
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
