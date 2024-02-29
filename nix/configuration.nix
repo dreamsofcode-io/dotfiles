@@ -75,9 +75,13 @@
   environment.systemPackages = with pkgs; [
     interception-tools
     git
+    gcc
+    go
     neovim
     ripgrep
     tmux
+    stow
+    unzip
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
