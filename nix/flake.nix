@@ -18,8 +18,8 @@
         # Modules
         disko.nixosModules.disko
       	# System Specific
-      	./itachi/hardware-configuration.nix
-        ./itachi/disko-config.nix
+      	./machines/itachi/hardware-configuration.nix
+        ./machines/itachi/disko-config.nix
         # General
         ./configuration.nix
         # Home Manager
@@ -27,7 +27,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.users.elliott = import ./home.nix;
+          home-manager.users.elliott = import ./home/home.nix;
         }
       ];
     };
