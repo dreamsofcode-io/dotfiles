@@ -1,4 +1,4 @@
-{ config, pkgs, fetchFromGitHub, ... }: 
+{ config, pkgs, ... }: 
 
 {
   programs.home-manager.enable = true;
@@ -12,6 +12,7 @@
   home.stateVersion = "24.05";
 
   programs = {
-    tmux = (import ./tmux.nix { inherit pkgs fetchFromGitHub; });
+    tmux = (import ./tmux.nix { inherit pkgs; });
+    zsh = (import ./zsh.nix { inherit config pkgs; });
   };
 }

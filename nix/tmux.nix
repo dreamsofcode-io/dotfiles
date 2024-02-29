@@ -1,13 +1,13 @@
-{ pkgs, fetchFromGitHub, ... }:
+{ pkgs, ... }:
 let
   catppuccin = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "catppuccin";
     version = "unstable-2023-01-06";
-    src = fetchFromGitHub {
+    src = pkgs.fetchFromGitHub {
       owner = "dreamsofcode-io";
       repo = "catppuccin-tmux";
-      rev = "";
-      sha256 = "";
+      rev = "main";
+      sha256 = "sha256-FJHM6LJkiAwxaLd5pnAoF3a7AE1ZqHWoCpUJE0ncCA8=";
     };
   };
 in
@@ -66,7 +66,7 @@ in
 
     set -g @catppuccin_flavour 'mocha'
 
-    run-shell ${pkgs.catppuccin}/share/catppuccin/catppuccin.tmux
+    run-shell ${catppuccin}/share/tmux-plugins/catppuccin/catppuccin.tmux
 
     # set vi-mode
     set-window-option -g mode-keys vi
