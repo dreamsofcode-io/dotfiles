@@ -12,32 +12,25 @@
   oh-my-zsh = {
     enable = true;
     plugins = [
-       "git"
+       "git" "sudo" "kubectl" "kubectx" "rust" "command-not-found"
     ];
   };
   plugins = [
     {
       # will source zsh-autosuggestions.plugin.zsh
-	    name = "zsh-autosuggestions";
-	    src = pkgs.zsh-autosuggestions;
+      name = "zsh-autosuggestions";
+      src = pkgs.zsh-autosuggestions;
+      file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
     }
     {
-	    name = "zsh-autocomplete";
-	    src = pkgs.zsh-autosuggestions;
+      name = "zsh-completions";
+      src = pkgs.zsh-completions;
+      file = "share/zsh-completions/zsh-completions.zsh";
     }
     {
-	    name = "zsh-syntax-highlighting";
-	    src = pkgs.zsh-syntax-highlighting;
-    }
-    {
-	    name = "enhancd";
-	    file = "init.sh";
-	    src = pkgs.fetchFromGitHub {
-		    owner = "b4b4r07";
-		    repo = "enhancd";
-		    rev = "v2.2.1";
-		    sha256 = "0iqa9j09fwm6nj5rpip87x3hnvbbz9w9ajgm6wkrd5fls8fn8i5g";
-	    };
+      name = "zsh-syntax-highlighting";
+      src = pkgs.zsh-syntax-highlighting;
+      file = "share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
     }
     {
       name = "powerlevel10k";
