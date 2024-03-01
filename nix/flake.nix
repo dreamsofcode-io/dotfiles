@@ -11,7 +11,8 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, disko, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, home-manager, ... }@inputs:
+  {
     nixosConfigurations.itachi = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -20,6 +21,28 @@
       	# System Specific
       	./machines/itachi/hardware-configuration.nix
         ./machines/itachi/disko-config.nix
+        # General
+        ./configuration.nix
+        # Home Manager
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.elliott = import ./home/home.nix;
+        }
+      ];
+    };
+    nixosConfigurations.sasuke = nixpkgs.lib.nixosSystem {
+      specialArgs = {
+        meta = { hostname = "sasuke"; };
+      };
+      system = "x86_64-linux";
+      modules = [
+        # Modules
+        disko.nixosModules.disko
+      	# System Specific
+      	./machines/sasuke/hardware-configuration.nix
+        ./machines/sasuke/disko-config.nix
         # General
         ./configuration.nix
         # Home Manager
