@@ -43,6 +43,7 @@
       	# System Specific
       	./machines/sasuke/hardware-configuration.nix
         ./machines/sasuke/disko-config.nix
+        ./machines/sasuke/hardware.nix
         # General
         ./configuration.nix
         # Home Manager

@@ -98,6 +98,11 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
+  # gnome
+  services.xserver.enable = true;
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
+
   # Enable interception tools. Possibly only needed for
   # laptop computers.
   services.interception-tools = {

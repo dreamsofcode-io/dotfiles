@@ -20,5 +20,6 @@ in
     tmux = (import ./tmux.nix { inherit pkgs; });
     zsh = (import ./zsh.nix { inherit config pkgs; });
     neovim = (import ./neovim.nix { inherit config pkgs; });
+    git = (import ./git.nix { inherit config pkgs; });
   };
 }
