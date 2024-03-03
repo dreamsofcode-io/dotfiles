@@ -11,6 +11,11 @@ in
 
   xdg.configFile.nvim.source = mkOutOfStoreSymlink "/home/elliott/.dotfiles/.config/nvim";
 
+  dconf = {
+    enable = true;
+    settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+  };
+
   home.packages = with pkgs; [
   ];
 
@@ -21,5 +26,6 @@ in
     zsh = (import ./zsh.nix { inherit config pkgs; });
     neovim = (import ./neovim.nix { inherit config pkgs; });
     git = (import ./git.nix { inherit config pkgs; });
+    alacritty = (import ./alacritty.nix { inherit config pkgs; });
   };
 }

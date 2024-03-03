@@ -43,8 +43,12 @@
   #   useXkbConfig = true; # use xkb.options in tty.
   };
 
+  fonts.packages = with pkgs; [ (nerdfonts.override { fonts = [ "JetBrainsMono" ]; }) ];
+
   # Enable the X11 windowing system.
-  # services.xserver.enable = true;
+  services.xserver.enable = true;
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
 
 
   # Configure keymap in X11
@@ -65,6 +69,7 @@
   users.users.elliott = {
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    shell = pkgs.zsh;
     packages = with pkgs; [
       firefox
       tree
@@ -92,6 +97,8 @@
     enable = true;
     enableSSHSupport = true;
   };
+
+  programs.zsh.enable = true;
 
   # List services that you want to enable:
 
