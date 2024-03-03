@@ -15,7 +15,7 @@
     };
 
     import = [
-      pkgs.alacritty-theme.monokai_pro
+      pkgs.alacritty-theme.catppuccin_mocha
     ];
 
     font = let jetbrainsMono = style: {
@@ -31,6 +31,10 @@
 
     cursor = {
       style = "Block";
+    };
+
+    env = {
+      TERM = "xterm-256color";
     };
 
     live_config_reload = true;

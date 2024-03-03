@@ -31,7 +31,9 @@ in
   ];
 
   extraConfig = ''
-    set-option -sa terminal-overrides ",xterm*:Tc"
+    # set-default colorset-option -ga terminal-overrides ",xterm-256color:Tc"
+    set -as terminal-features ",xterm-256color:RGB"
+    # set-option -sa terminal-overrides ",xterm*:Tc"
     set -g mouse on
 
     unbind C-b
@@ -40,7 +42,7 @@ in
 
     # Vim style pane selection
     bind h select-pane -L
-    bind j select-pane -D 
+    bind j select-pane -D
     bind k select-pane -U
     bind l select-pane -R
 

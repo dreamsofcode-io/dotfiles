@@ -25,6 +25,9 @@
     };
 
     nixosConfigurations.itachi = nixpkgs.lib.nixosSystem {
+      specialArgs = {
+        meta = { hostname = "itachi"; };
+      };
       system = "x86_64-linux";
       modules = [
         # Modules
