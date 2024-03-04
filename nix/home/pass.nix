@@ -1,0 +1,4 @@
+{ pkgs, ... }:
+{
+  enable = true;
+}

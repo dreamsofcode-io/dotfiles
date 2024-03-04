@@ -87,6 +87,7 @@
     pika-backup
     ripgrep
     tmux
+    wl-clipboard
     stow
     unzip
   ];

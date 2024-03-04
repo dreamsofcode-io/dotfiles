@@ -12,7 +12,7 @@
   oh-my-zsh = {
     enable = true;
     plugins = [
-       "git" "sudo" "kubectl" "kubectx" "rust" "command-not-found"
+       "git" "sudo" "kubectl" "kubectx" "rust" "command-not-found" "pass"
     ];
   };
   plugins = [
