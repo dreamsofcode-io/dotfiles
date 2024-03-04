@@ -28,5 +28,6 @@ in
     git = (import ./git.nix { inherit config pkgs; });
     alacritty = (import ./alacritty.nix { inherit config pkgs; });
     gpg = (import ./gpg.nix { inherit config pkgs; });
+    firefox = (import ./firefox.nix { inherit pkgs; });
   };
 }
