@@ -5,10 +5,9 @@
 { config, lib, pkgs, meta, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      #./hardware-configuration.nix
-    ];
+  imports = [
+    ./modules/yubikey-gpg.nix
+  ];
 
   nix = {
     package = pkgs.nixFlakes;
@@ -73,6 +72,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    firefox
     interception-tools
     git
     gcc
