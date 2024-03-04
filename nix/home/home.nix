@@ -29,5 +29,7 @@ in
     alacritty = (import ./alacritty.nix { inherit config pkgs; });
     gpg = (import ./gpg.nix { inherit config pkgs; });
     firefox = (import ./firefox.nix { inherit pkgs; });
+    zoxide = (import ./zoxide.nix { inherit pkgs; });
+    password-store = (import ./pass.nix { inherit pkgs; });
   };
 }
