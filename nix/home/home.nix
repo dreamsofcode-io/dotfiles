@@ -27,5 +27,6 @@ in
     neovim = (import ./neovim.nix { inherit config pkgs; });
     git = (import ./git.nix { inherit config pkgs; });
     alacritty = (import ./alacritty.nix { inherit config pkgs; });
+    gpg = (import ./gpg.nix { inherit config pkgs; });
   };
 }
