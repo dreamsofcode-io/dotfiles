@@ -60,6 +60,22 @@
       };
       home = {
         type = "disk";
+        device = "/dev/sda";
+        content = {
+          type = "gpt";
+          partitions = {
+            home = {
+              size = "100%";
+              content = {
+                type = "mdraid";
+                name = "home";
+              };
+            };
+          };
+        };
+      };
+      home_backup = {
+        type = "disk";
         device = "/dev/sdb";
         content = {
           type = "gpt";
@@ -67,24 +83,8 @@
             home = {
               size = "100%";
               content = {
-                type = "luks";
-                name = "nix-home";
-                passwordFile = "/tmp/secret.key";
-                settings = {
-                  allowDiscards = true;
-                };
-                content = {
-                  type = "btrfs";
-                  extraArgs = [ "-f" ];
-                  subvolumes = {
-                    "/home" = {
-                      mountpoint = "/home";
-                      mountOptions = [ "compress=zstd" "noatime" ];
-                    };
-                  };
-                };
-                #type = "mdraid";
-                #name = "home";
+                type = "mdraid";
+                name = "home";
               };
             };
           };
@@ -115,6 +115,28 @@
           content = {
             type = "lvm_pv";
             vg = "nix";
+          };
+        };
+      };
+      home = {
+        type = "mdadm";
+        level = 1;
+        content = {
+          type = "luks";
+          name = "nix-home";
+          passwordFile = "/tmp/secret.key";
+          settings = {
+            allowDiscards = true;
+          };
+          content = {
+            type = "btrfs";
+            extraArgs = [ "-f" ];
+            subvolumes = {
+              "/home" = {
+                mountpoint = "/home";
+                mountOptions = [ "compress=zstd" "noatime" ];
+              };
+            };
           };
         };
       };

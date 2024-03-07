@@ -52,6 +52,34 @@
         }
       ];
     };
+    nixosConfigurations.amaterasu = nixpkgs.lib.nixosSystem {
+      specialArgs = {
+        meta = { hostname = "amaterasu"; };
+      };
+      system = "x86_64-linux";
+      modules = [
+        # Modules
+        disko.nixosModules.disko
+      	# System Specific
+      	./machines/amaterasu/hardware-configuration.nix
+        ./machines/amaterasu/disko-config.nix
+        # General
+        ./configuration.nix
+        # Home Manager
+        ({ config, pkgs, ...}: {
+          nixpkgs.overlays = [
+            self.overlays.unstable
+            alacritty-theme.overlays.default
+          ];
+        })
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.elliott = import ./home/home.nix;
+        }
+      ];
+    };
     nixosConfigurations.sasuke = nixpkgs.lib.nixosSystem {
       specialArgs = {
         meta = { hostname = "sasuke"; };
