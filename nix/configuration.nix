@@ -6,9 +6,12 @@
 
 {
   imports = [
+    ./modules/languages.nix
+    ./modules/gaming.nix
     ./modules/messaging.nix
     ./modules/yubikey-gpg.nix
     ./modules/unfree.nix
+    ./modules/video.nix
   ];
 
   nix = {
@@ -69,6 +72,9 @@
       firefox
       tree
     ];
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDNFZUZg93LySz/1Qdg7WBEBdpnSMjJyJmFwnPikmTHJ/MQWC0Bf5kVyfkLxaU3paeRQnoI4RcG9k8DJGy8hnUdxe2Eg5fWtW0+cJ0zm791WisCTb8bCmTBO9053U59qOA7WTrJAVcTylBsBa7R3CGs6FYlMsu8CXvUWrp4XQ2k83DQlzpgr5r9BNIsfbfswXMSm91i/bRSuxSXu2QpV/9C4wHBUYAGz+hTFw8LJgt/lH6ute2w1ed93/vG4CNI9gv1obecc8rrVGvjZk1Q6sPr8PamBxc7Y4HEYWKPtJPq54UK+b2duUuL2tDYVQmJIvto6how+EZ/oAPxMRK5qHJOn2AJ/z0rcPO6FqyggtKeZATOgFCYSNLLrEwiYvppVNiM/hjFRqpk+BZ+gWE1X+D3xXIDUG1jchMCUQ/2q62CSp/VU/z39IGBxa9eN/k6WsmdlKgeCcx2BtoFKMd0LQqfndduYPcnvn2EzJwLrF0p7LQGIO74jkAQ451IeSoDOvlCe9Y9LAjwH1DG4ve7XwuqpKdJ2LcHirLHxQIONdc906U70TVuQzGOJed5huhKBkbGzDi08VsF8zCO9pMHSJ2ioBWVyNSRUf9wVKtPtUFhmgCHT/l0+xdrCeE8m7sT0Zb8qNjdMDylXQhaPm30f/ievIBe5+81w0Kyoj4kFSzr3Q== cardno:11_070_772"
+    ];
   };
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -79,16 +85,22 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     firefox
+    chromium
     interception-tools
     git
-    gcc
-    go
+    kubectl
     neovim
     pika-backup
     ripgrep
+    protonvpn-cli
     tmux
     wl-clipboard
     stow
+    glib
+    gtk3
+    gio-sharp
+    mm-common
+    pkg-config
     unzip
   ];
 
