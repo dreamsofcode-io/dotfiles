@@ -89,6 +89,7 @@
     interception-tools
     git
     kubectl
+    fzf
     neovim
     pika-backup
     ripgrep
@@ -101,6 +102,7 @@
     gio-sharp
     mm-common
     pkg-config
+    stylua
     unzip
   ];
 
