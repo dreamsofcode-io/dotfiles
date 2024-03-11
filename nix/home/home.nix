@@ -32,5 +32,6 @@ in
     firefox = (import ./firefox.nix { inherit pkgs; });
     zoxide = (import ./zoxide.nix { inherit pkgs; });
     password-store = (import ./pass.nix { inherit pkgs; });
+    fzf = (import ./fzf.nix { inherit pkgs; });
   };
 }
