@@ -53,9 +53,13 @@ export LD_LIBRARY_PATH=/usr/local/lib
 
 # Completions
 
-source <(doctl completion zsh)
+if type "doctl" > /dev/null; then
+  source <(doctl completion zsh)
+fi
 
-source <(kubectl completion zsh)
+if type "kubectl" > /dev/null; then
+  source <(kubectl completion zsh)
+fi
 
 # P10k customizations
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -84,4 +88,16 @@ zle_highlight=('paste:none')
 
 #eval "$(sheldon source)"
 
+if type "goenv" > /dev/null; then
+  eval "$(goenv init -)"
+fi
+
+if type "yarn" > /dev/null; then
+  export PATH="$(yarn global bin 2> >(grep -v warning 1>&2)):$PATH"
+fi
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
 eval "$(zoxide init --cmd cd zsh)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
