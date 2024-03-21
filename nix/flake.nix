@@ -80,6 +80,29 @@
         }
       ];
     };
+    nixosConfigurations.karasu = nixpkgs.lib.nixosSystem {
+      specialArgs = {
+        meta = { hostname = "karasu"; };
+      };
+      system = "x86_64-linux";
+      modules = [
+        # Modules
+        disko.nixosModules.disko
+      	# System Specific
+      	./machines/karasu/hardware-configuration.nix
+        ./machines/karasu/disko-config.nix
+        ./machines/karasu/hardware.nix
+        # General
+        ./configuration.nix
+        # Home Manager
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.elliott = import ./home/home.nix;
+        }
+      ];
+    };
     nixosConfigurations.sasuke = nixpkgs.lib.nixosSystem {
       specialArgs = {
         meta = { hostname = "sasuke"; };
