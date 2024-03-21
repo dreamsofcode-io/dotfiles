@@ -104,6 +104,7 @@
     pkg-config
     stylua
     unzip
+    gnome.zenity
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
