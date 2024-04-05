@@ -15,7 +15,7 @@
     };
 
     import = [
-      pkgs.alacritty-theme.catppuccin_mocha
+      pkgs.alacritty-theme.rose-pine
     ];
 
     font = let jetbrainsMono = style: {

@@ -4,6 +4,7 @@
     builtins.elem (lib.getName pkg) [
       "davinci-resolve"
       "discord"
+      "signal-desktop"
       "steam"
       "steam-run"
       "steam-original"
@@ -13,5 +14,6 @@
   environment.systemPackages = with pkgs; [
     discord
     obsidian
+    signal-desktop
   ];
 }

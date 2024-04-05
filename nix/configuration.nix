@@ -1,4 +1,4 @@
-# Edit this configuration file to define what should be installed on
+# Edit this configuration file to define what should be installed onconfig
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
@@ -7,6 +7,7 @@
 {
   imports = [
     ./modules/languages.nix
+    ./modules/gnome.nix
     ./modules/gaming.nix
     ./modules/messaging.nix
     ./modules/yubikey-gpg.nix
@@ -47,7 +48,10 @@
   #   useXkbConfig = true; # use xkb.options in tty.
   };
 
-  fonts.packages = with pkgs; [ (nerdfonts.override { fonts = [ "JetBrainsMono" ]; }) ];
+  fonts.packages = with pkgs; [
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    openmoji-color
+  ];
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -84,12 +88,18 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    calibre
     firefox
     chromium
+    erlang
+    rebar3
     interception-tools
     git
+    gleam
     kubectl
     fzf
+    lua-language-server
+    jq
     neovim
     pika-backup
     ripgrep
@@ -104,7 +114,8 @@
     pkg-config
     stylua
     unzip
-    gnome.zenity
+    transmission_4-gtk
+    qemu
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

@@ -91,10 +91,16 @@
       	# System Specific
       	./machines/karasu/hardware-configuration.nix
         ./machines/karasu/disko-config.nix
-        ./machines/karasu/hardware.nix
         # General
         ./configuration.nix
         # Home Manager
+        # Home Manager
+        ({ config, pkgs, ...}: {
+          nixpkgs.overlays = [
+            self.overlays.unstable
+            alacritty-theme.overlays.default
+          ];
+        })
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
