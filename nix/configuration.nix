@@ -116,6 +116,8 @@
     unzip
     transmission_4-gtk
     qemu
+    templ
+    gopls
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

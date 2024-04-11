@@ -32,7 +32,15 @@ return {
 				},
 			})
 
-			lspconfig.tailwindcss.setup({})
+			lspconfig.tailwindcss.setup({
+				settings = {
+					includeLanguages = {
+						templ = "html",
+					},
+				},
+			})
+
+			lspconfig.templ.setup({})
 		end,
 	},
 }

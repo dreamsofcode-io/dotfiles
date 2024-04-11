@@ -4,15 +4,26 @@ vim.g.maplocalleader = " "
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable", -- latest stable release
-		lazypath,
-	})
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
 end
+
+vim.cmd("au BufRead,BufNewFile *.templ setfiletype templ")
+local autocmd = vim.api.nvim_create_autocmd
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
+  pattern = { "*.templ" },
+  callback = function()
+    local buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_option(buf, "filetype", "templ")
+  end,
+})
 
 vim.opt.rtp:prepend(lazypath)
 
@@ -23,10 +34,10 @@ vim.o.hlsearch = false
 vim.wo.number = true
 
 -- Tabs vs spaces
-vim.o.tabstop = 2 -- A TAB character looks like 4 spaces
+vim.o.tabstop = 2      -- A TAB character looks like 4 spaces
 vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
-vim.o.softtabstop = 2 -- Number of spaces inserted instead of a TAB character
-vim.o.shiftwidth = 2 -- Number of spaces inserted when indenting
+vim.o.softtabstop = 2  -- Number of spaces inserted instead of a TAB character
+vim.o.shiftwidth = 2   -- Number of spaces inserted when indenting
 
 -- Enable mouse mode
 vim.o.mouse = "a"

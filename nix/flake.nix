@@ -14,15 +14,22 @@
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    templ.url = "github:a-h/templ";
   };
 
-  outputs = { self, nixpkgs, disko, home-manager, alacritty-theme, nixpkgs-unstable, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, home-manager, alacritty-theme, templ, nixpkgs-unstable, ... }@inputs: {
     overlays.unstable = final: prev: {
       unstable = import nixpkgs-unstable {
         system = prev.system;
         config.allowUnfree = prev.config.allowUnfree;
       };
     };
+
+    nixpkgs.overlays = [
+      self.overlays.unstable
+      alacritty-theme.overlays.default
+      templ.overlays.default
+    ];
 
     nixosConfigurations.itachi = nixpkgs.lib.nixosSystem {
       specialArgs = {
@@ -42,6 +49,7 @@
           nixpkgs.overlays = [
             self.overlays.unstable
             alacritty-theme.overlays.default
+            inputs.templ.overlays.default
           ];
         })
         home-manager.nixosModules.home-manager
@@ -70,6 +78,7 @@
           nixpkgs.overlays = [
             self.overlays.unstable
             alacritty-theme.overlays.default
+            inputs.templ.overlays.default
           ];
         })
         home-manager.nixosModules.home-manager
@@ -99,6 +108,7 @@
           nixpkgs.overlays = [
             self.overlays.unstable
             alacritty-theme.overlays.default
+            inputs.templ.overlays.default
           ];
         })
         home-manager.nixosModules.home-manager
