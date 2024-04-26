@@ -5,6 +5,7 @@ return {
 		"pkl",
 		"rust",
 		"gleam",
+		"templ",
 	},
 	highlight = {
 		enable = true,
