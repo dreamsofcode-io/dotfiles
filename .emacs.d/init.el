@@ -144,16 +144,16 @@
   :init (load-theme 'catppuccin t))
 
 (set-face-attribute 'default nil
-  :font "JetBrains Mono Nerd Font" 
+  :font "JetBrainsMono Nerd Font" 
   :height dreams/default-font-size
   :weight 'medium)
 
 (set-face-attribute 'fixed-pitch nil 
-  :font "JetBrains Mono Nerd Font" 
+  :font "JetBrainsMono Nerd Font" 
   :height dreams/default-font-size)
 
 (set-face-attribute 'variable-pitch nil 
-  :font "Cantarell"
+  :font "Poppins"
   :height dreams/default-variable-font-size
   :weight 'regular)
 
