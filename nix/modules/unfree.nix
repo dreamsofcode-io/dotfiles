@@ -9,11 +9,14 @@
       "steam-run"
       "steam-original"
       "obsidian"
+      "slack"
     ];
 
   environment.systemPackages = with pkgs; [
+    davinci-resolve
     discord
     obsidian
     signal-desktop
+    slack
   ];
 }

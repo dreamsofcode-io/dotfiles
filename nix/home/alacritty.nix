@@ -15,7 +15,7 @@
     };
 
     import = [
-      pkgs.alacritty-theme.rose-pine
+      pkgs.alacritty-theme.tokyo-night
     ];
 
     font = let jetbrainsMono = style: {

@@ -70,7 +70,10 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.elliott = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [
+    "wheel" # Enable ‘sudo’ for the user.
+    "docker"
+    ];
     shell = pkgs.zsh;
     packages = with pkgs; [
       firefox
@@ -118,7 +121,11 @@
     qemu
     templ
     gopls
+    go-migrate
+    eza
   ];
+
+  virtualisation.docker.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

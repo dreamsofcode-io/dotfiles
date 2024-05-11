@@ -20,6 +20,17 @@ let
       sha256 = "sha256-0ccJVQIIOpHdr3xMIBC1wbgsARCNpmN+xMYVO6eu/SI=";
     };
   };
+  tokyo-night = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "tokyo-night";
+    version = "unstable-2023-01-06";
+    src = pkgs.fetchFromGitHub {
+      owner = "janoamaral";
+      repo = "tokyo-night-tmux";
+      rev = "master";
+      sha256 = "sha256-3rMYYzzSS2jaAMLjcQoKreE0oo4VWF9dZgDtABCUOtY=";
+    };
+  };
+
 in
 {
   enable = true;
@@ -36,6 +47,7 @@ in
 
   plugins = with pkgs.tmuxPlugins; [
     rose-pine
+    tokyo-night
     yank
     sensible
     vim-tmux-navigator
@@ -77,11 +89,10 @@ in
     bind -n M-H previous-window
     bind -n M-L next-window
 
-    set -g @rose_pine_variant 'main'
-    set -g @rose_pine_show_pane_directory 'on'
-    set -g @rose_pine_show_pane_directory 'on'
+    set -g @tokyo-night-tmux_window_id_style hsquare
 
-    run-shell ${rose-pine}/share/tmux-plugins/rose-pine/rose-pine.tmux
+    # run-shell ${rose-pine}/share/tmux-plugins/rose-pine/rose-pine.tmux
+    run-shell ${tokyo-night}/share/tmux-plugins/tokyo-night/tokyo-night.tmux
 
     # set vi-mode
     set-window-option -g mode-keys vi
