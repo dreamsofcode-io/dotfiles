@@ -1,3 +1,7 @@
+import = [
+  "~/.config/alacritty/themes/themes/tokyo-night.toml"
+]
+
 live_config_reload = true
 
 [bell]
@@ -7,41 +11,41 @@ duration = 0
 [colors]
 draw_bold_text_with_bright_colors = true
 
-[[colors.indexed_colors]]
-color = "0xF8BD96"
-index = 16
-
-[[colors.indexed_colors]]
-color = "0xF5E0DC"
-index = 17
-
-[colors.bright]
-black = "0x988BA2"
-blue = "0x96CDFB"
-cyan = "0x89DCEB"
-green = "0xABE9B3"
-magenta = "0xF5C2E7"
-red = "0xF28FAD"
-white = "0xD9E0EE"
-yellow = "0xFAE3B0"
-
-[colors.cursor]
-cursor = "0xF5E0DC"
-text = "0x1E1D2F"
-
-[colors.normal]
-black = "0x6E6C7E"
-blue = "0x96CDFB"
-cyan = "0x89DCEB"
-green = "0xABE9B3"
-magenta = "0xF5C2E7"
-red = "0xF28FAD"
-white = "0xD9E0EE"
-yellow = "0xFAE3B0"
-
-[colors.primary]
-background = "0x1E1D2F"
-foreground = "0xD9E0EE"
+# [[colors.indexed_colors]]
+# color = "0xF8BD96"
+# index = 16
+#
+# [[colors.indexed_colors]]
+# color = "0xF5E0DC"
+# index = 17
+#
+# [colors.bright]
+# black = "0x988BA2"
+# blue = "0x96CDFB"
+# cyan = "0x89DCEB"
+# green = "0xABE9B3"
+# magenta = "0xF5C2E7"
+# red = "0xF28FAD"
+# white = "0xD9E0EE"
+# yellow = "0xFAE3B0"
+#
+# [colors.cursor]
+# cursor = "0xF5E0DC"
+# text = "0x1E1D2F"
+#
+# [colors.normal]
+# black = "0x6E6C7E"
+# blue = "0x96CDFB"
+# cyan = "0x89DCEB"
+# green = "0xABE9B3"
+# magenta = "0xF5C2E7"
+# red = "0xF28FAD"
+# white = "0xD9E0EE"
+# yellow = "0xFAE3B0"
+#
+# [colors.primary]
+# background = "0x1E1D2F"
+# foreground = "0xD9E0EE"
 
 [cursor]
 blink_interval = 500
@@ -93,6 +97,7 @@ program = "/bin/zsh"
 [window]
 decorations = "full"
 dynamic_title = true
+option_as_alt = "Both"
 #startup_mode = "Maximized"
 
 [window.dimensions]
