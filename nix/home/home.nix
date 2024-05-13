@@ -20,7 +20,7 @@ in
   home.packages = with pkgs; [
   ];
 
-  home.stateVersion = "24.05";
+  home.stateVersion = "23.11";
 
   programs = {
     tmux = (import ./tmux.nix { inherit pkgs; });

@@ -2,10 +2,16 @@
   description = "Top level NixOS Flake";
 
   inputs = {
+    # Nixpkgs
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+
+    # Unstable Packages
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+
     # Disko
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+
     # Home Manager
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -13,11 +19,21 @@
     # Alacritty theme
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
 
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     templ.url = "github:a-h/templ";
   };
 
-  outputs = { self, nixpkgs, disko, home-manager, alacritty-theme, templ, nixpkgs-unstable, ... }@inputs: {
+  outputs = { self, nixpkgs, disko, home-manager, alacritty-theme, templ, nixpkgs-unstable, ... }@inputs: let
+    inherit (self) outputs;
+
+    systems = [
+      "x86_64-linux"
+    ];
+
+    forAllSystems = nixpkgs.lib.genAttrs systems;
+  in  {
+
+    overlays.additions = final: _prev: import ./pkgs final.pkgs;
+
     overlays.unstable = final: prev: {
       unstable = import nixpkgs-unstable {
         system = prev.system;
@@ -30,6 +46,8 @@
       alacritty-theme.overlays.default
       templ.overlays.default
     ];
+
+    packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
 
     nixosConfigurations.itachi = nixpkgs.lib.nixosSystem {
       specialArgs = {
@@ -91,6 +109,7 @@
     };
     nixosConfigurations.karasu = nixpkgs.lib.nixosSystem {
       specialArgs = {
+        inherit inputs outputs;
         meta = { hostname = "karasu"; };
       };
       system = "x86_64-linux";
@@ -103,10 +122,10 @@
         # General
         ./configuration.nix
         # Home Manager
-        # Home Manager
         ({ config, pkgs, ...}: {
           nixpkgs.overlays = [
             self.overlays.unstable
+            self.overlays.additions
             alacritty-theme.overlays.default
             inputs.templ.overlays.default
           ];
