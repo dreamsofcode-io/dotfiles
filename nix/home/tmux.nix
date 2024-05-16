@@ -90,12 +90,13 @@ in
     bind -n M-L next-window
 
     set -g @tokyo-night-tmux_window_id_style hsquare
+    set -g @tokyo-night-tmux_show_datetime 0
 
-    # run-shell ${rose-pine}/share/tmux-plugins/rose-pine/rose-pine.tmux
     run-shell ${tokyo-night}/share/tmux-plugins/tokyo-night/tokyo-night.tmux
 
     # set vi-mode
     set-window-option -g mode-keys vi
+
     # keybindings
     bind-key -T copy-mode-vi v send-keys -X begin-selection
     bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle

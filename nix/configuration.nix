@@ -146,6 +146,11 @@
     go-migrate
     eza
     gptscript
+    grim # screenshot functionality
+    slurp # screenshot functionality
+    wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
+    mako # notification system developed by swaywm maintainer
+    wofi
   ];
 
   virtualisation.docker.enable = true;
@@ -158,6 +163,14 @@
     enableSSHSupport = true;
   };
 
+  # enable sway window manager
+  programs.sway = {
+    enable = true;
+    wrapperFeatures.gtk = true;
+  };
+
+  programs.hyprland.enable = true;
+
   programs.zsh.enable = true;
 
   # List services that you want to enable:
@@ -166,8 +179,7 @@
   services.openssh.enable = true;
 
   # gnome
-  services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.enable = true; services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
   # Enable interception tools. Possibly only needed for

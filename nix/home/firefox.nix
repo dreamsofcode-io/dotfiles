@@ -5,8 +5,6 @@
     cfg = {
       # Gnome shell native connector
       enableGnomeExtensions = true;
-      # Tridactyl native connector
-      enableTridactylNative = true;
     };
   };
 }
