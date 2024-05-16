@@ -34,4 +34,8 @@ in
     password-store = (import ./pass.nix { inherit pkgs; });
     fzf = (import ./fzf.nix { inherit pkgs; });
   };
+
+  wayland.windowManager = {
+    hyprland = (import ./hyprland.nix { inherit pkgs; });
+  };
 }
