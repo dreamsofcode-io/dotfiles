@@ -80,6 +80,7 @@
     };
     nixosConfigurations.amaterasu = nixpkgs.lib.nixosSystem {
       specialArgs = {
+        inherit inputs outputs;
         meta = { hostname = "amaterasu"; };
       };
       system = "x86_64-linux";
@@ -95,6 +96,7 @@
         ({ config, pkgs, ...}: {
           nixpkgs.overlays = [
             self.overlays.unstable
+            self.overlays.additions
             alacritty-theme.overlays.default
             inputs.templ.overlays.default
           ];
