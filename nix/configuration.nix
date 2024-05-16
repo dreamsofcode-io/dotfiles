@@ -169,6 +169,8 @@
     wrapperFeatures.gtk = true;
   };
 
+  security.polkit.enable = true;
+
   programs.hyprland.enable = true;
 
   programs.zsh.enable = true;
