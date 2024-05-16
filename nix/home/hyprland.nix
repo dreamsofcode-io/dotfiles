@@ -39,7 +39,6 @@
   };
 
   extraConfig = ''
-  bezier
   bezier=easeOutBack,0.34,1.56,0.64,1
   bezier=easeInBack,0.36,0,0.66,-0.56
   bezier=easeInCubic,0.32,0,0.67,0
