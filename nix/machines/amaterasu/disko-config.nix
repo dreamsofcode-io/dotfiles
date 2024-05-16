@@ -33,7 +33,7 @@
 		content = {
 		  type = "lvm_pv";
 		  vg = "nix";
-		}
+		};
               };
             };
           };
