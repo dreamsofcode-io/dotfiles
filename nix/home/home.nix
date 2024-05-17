@@ -33,6 +33,7 @@ in
     zoxide = (import ./zoxide.nix { inherit pkgs; });
     password-store = (import ./pass.nix { inherit pkgs; });
     fzf = (import ./fzf.nix { inherit pkgs; });
+    eww = (import ./eww/default.nix { inherit pkgs; });
   };
 
   wayland.windowManager = {
