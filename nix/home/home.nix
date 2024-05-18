@@ -1,8 +1,10 @@
-{ config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 let
   inherit (config.lib.file) mkOutOfStoreSymlink;
 in
 {
+  imports = [ inputs.ags.homeManagerModules.default ];
+
   programs.home-manager.enable = true;
 
   home.username = "elliott";
@@ -33,10 +35,27 @@ in
     zoxide = (import ./zoxide.nix { inherit pkgs; });
     password-store = (import ./pass.nix { inherit pkgs; });
     fzf = (import ./fzf.nix { inherit pkgs; });
-    eww = (import ./eww/default.nix { inherit pkgs; });
   };
+
+  # gtk = {
+  #   enable = true;
+    # gtk3.extraConfig.gtk-decoration-layout = "menu:";
+    # theme = {
+    #   name = "Tokyonight-Dark-B";
+    #   package = pkgs.tokyo-night-gtk;
+    # };
+    # iconTheme = {
+    #   name = "Tokyonight-Dark";
+    # };
+  #   # cursorTheme = {
+  #   #   name = gtkCursorTheme;
+  #   #   package = pkgs.bibata-cursors;
+  #   # };
+  # };
 
   wayland.windowManager = {
     hyprland = (import ./hyprland.nix { inherit pkgs; });
   };
+
+  programs.ags = (import ./ags/default.nix { inherit pkgs; });
 }

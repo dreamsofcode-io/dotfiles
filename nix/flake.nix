@@ -19,15 +19,29 @@
     # Alacritty theme
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
 
+    # Templ
     templ.url = "github:a-h/templ";
+
+    # Ags
+    ags.url = "github:Aylur/ags";
   };
 
-  outputs = { self, nixpkgs, disko, home-manager, alacritty-theme, templ, nixpkgs-unstable, ... }@inputs: let
+  outputs = { self, nixpkgs, disko, home-manager, alacritty-theme, templ, nixpkgs-unstable, ags, ... }@inputs: let
     inherit (self) outputs;
 
     systems = [
       "x86_64-linux"
     ];
+
+    pkgs = import nixpkgs {
+      system = "x86_64-linux";
+      config = {
+        allowUnfree = true;
+        permittedInsecurePackages = [
+          "electron-25.9.0"
+        ];
+      };
+    };
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
   in  {
@@ -101,6 +115,7 @@
             inputs.templ.overlays.default
           ];
         })
+        inputs.ags.homeManagerModules.default
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
@@ -134,9 +149,10 @@
         })
         home-manager.nixosModules.home-manager
         {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.elliott = import ./home/home.nix;
+           home-manager.useGlobalPkgs = true;
+           home-manager.useUserPackages = true;
+           home-manager.users.elliott = import ./home/home.nix;
+           home-manager.extraSpecialArgs = {inherit inputs; };
         }
       ];
     };
@@ -160,6 +176,7 @@
             self.overlays.unstable
             alacritty-theme.overlays.default
             inputs.templ.overlays.default
+            inputs.ags.overlays.default
           ];
         })
         home-manager.nixosModules.home-manager
@@ -167,6 +184,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.elliott = import ./home/home.nix;
+          home-manager.extraSpecialArgs = { inherit inputs; };
         }
       ];
     };
@@ -191,6 +209,15 @@
           home-manager.useUserPackages = true;
           home-manager.users.elliott = import ./home/home.nix;
         }
+      ];
+    };
+
+    homeConfigurations.elliott = home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+      extraSpecialArgs = { inherit inputs; };
+
+      modules = [
+	./home.nix
       ];
     };
   };

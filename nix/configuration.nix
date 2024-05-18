@@ -118,7 +118,6 @@
     chromium
     erlang
     rebar3
-    interception-tools
     git
     gleam
     kubectl
@@ -151,8 +150,9 @@
     wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
     mako # notification system developed by swaywm maintainer
     wofi
-    eww
     nwg-look
+    kanata
+    sassc
   ];
 
   virtualisation.docker.enable = true;
@@ -186,19 +186,40 @@
   services.xserver.enable = true; services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  # Enable interception tools. Possibly only needed for
-  # laptop computers.
-  services.interception-tools = {
+  services.kanata = {
     enable = true;
-    plugins = with pkgs; [
-      interception-tools-plugins.caps2esc
-    ];
-    udevmonConfig = ''
-      - JOB: "${pkgs.interception-tools}/bin/intercept -g $DEVNODE | ${pkgs.interception-tools-plugins.caps2esc}/bin/caps2esc -m 1 | ${pkgs.interception-tools}/bin/uinput -d $DEVNODE"
-        DEVICE:
-          EVENTS:
-            EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
-    '';
+    keyboards = {
+      internalKeyboard = {
+        devices = [
+          "/dev/input/by-path/platform-i8042-serio-0-event-kbd"
+        ];
+        extraDefCfg = "process-unmapped-keys yes";
+        config = ''
+        (defsrc
+         caps a s d f j k l ;
+        )
+        (defvar
+         tap-time 150
+         hold-time 200
+        )
+        (defalias
+         caps (tap-hold 100 100 esc lctl)
+         a (tap-hold $tap-time $hold-time a lmet)
+         s (tap-hold $tap-time $hold-time s lalt)
+         d (tap-hold $tap-time $hold-time d lsft)
+         f (tap-hold $tap-time $hold-time f lctl)
+         j (tap-hold $tap-time $hold-time j rctl)
+         k (tap-hold $tap-time $hold-time k rsft)
+         l (tap-hold $tap-time $hold-time l ralt)
+         ; (tap-hold $tap-time $hold-time ; rmet)
+        )
+
+        (deflayer base
+         @caps @a  @s  @d  @f  @j  @k  @l  @;
+        )
+        '';
+      };
+    };
   };
 
   # Open ports in the firewall.

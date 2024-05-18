@@ -39,8 +39,7 @@
   };
 
   extraConfig = ''
-  exec-once = eww daemon
-  exec-once = eww open bar -c ~/.config/eww/bar
+  exec-once = ags
 
   bezier=easeOutBack,0.34,1.56,0.64,1
   bezier=easeInBack,0.36,0,0.66,-0.56
@@ -52,5 +51,19 @@
   animation=fadeOut,1,10,easeInCubic
   animation=workspaces,1,4,easeInOutCubic,slide
   general:gaps_out=30
+  xwayland {
+    force_zero_scaling = true
+  }
+
+  input {
+    follow_mouse = 1
+      touchpad {
+        natural_scroll = true
+          disable_while_typing = true
+          tap-to-click = false
+          middle_button_emulation = false
+      }
+    sensitivity = 0
+  }
   '';
 }
