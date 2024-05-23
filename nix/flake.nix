@@ -24,6 +24,9 @@
 
     # Ags
     ags.url = "github:Aylur/ags";
+
+    # Matugen
+    matugen.url = "github:InioX/matugen?ref=v2.2.0";
   };
 
   outputs = { self, nixpkgs, disko, home-manager, alacritty-theme, templ, nixpkgs-unstable, ags, ... }@inputs: let

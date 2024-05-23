@@ -99,6 +99,8 @@
     extraGroups = [
     "wheel" # Enable ‘sudo’ for the user.
     "docker"
+    "input"
+    "uinput"
     ];
     shell = pkgs.zsh;
     packages = with pkgs; [
@@ -153,6 +155,7 @@
     nwg-look
     kanata
     sassc
+    dotool
   ];
 
   virtualisation.docker.enable = true;

@@ -3,7 +3,9 @@ let
   inherit (config.lib.file) mkOutOfStoreSymlink;
 in
 {
-  imports = [ inputs.ags.homeManagerModules.default ];
+  imports = [
+    ./ags/default.nix
+  ];
 
   programs.home-manager.enable = true;
 
@@ -57,5 +59,5 @@ in
     hyprland = (import ./hyprland.nix { inherit pkgs; });
   };
 
-  programs.ags = (import ./ags/default.nix { inherit pkgs; });
+  #programs.ags = (import ./ags/default.nix { inherit pkgs; });
 }
