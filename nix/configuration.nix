@@ -102,7 +102,7 @@
     "input"
     "uinput"
     ];
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
     packages = with pkgs; [
       tree
     ];
@@ -178,7 +178,7 @@
 
   programs.hyprland.enable = true;
 
-  programs.zsh.enable = true;
+  programs.fish.enable = true;
 
   # List services that you want to enable:
 
