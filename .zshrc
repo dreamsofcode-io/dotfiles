@@ -61,6 +61,9 @@ zinit cdreplay -q
 bindkey -e
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
+bindkey '^[w' kill-region
+
+zle_highlight+=(paste:none)
 
 # History
 HISTSIZE=5000
