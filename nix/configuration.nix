@@ -102,7 +102,7 @@
     "input"
     "uinput"
     ];
-    shell = pkgs.fish;
+    shell = pkgs.zsh;
     packages = with pkgs; [
       tree
     ];
