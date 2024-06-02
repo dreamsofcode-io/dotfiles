@@ -14,6 +14,12 @@ else
 fi
 
 PATH="$HOME/.go/bin:$PATH"
+if [[ -f "/opt/homebrew/bin/brew" ]] then
+  # If you're using macOS, you'll want this enabled
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+export EDITOR=nvim
 
 # SSH_AUTH_SOCK set to GPG to enable using gpgagent as the ssh agent.
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
